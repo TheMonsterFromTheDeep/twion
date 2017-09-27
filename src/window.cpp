@@ -97,7 +97,7 @@ Vec Window::getMouse() {
 	return Vec(xpos, ypos);
 }
 
-void Window::draw(const Control& c) {
+void Window::draw(Control& c) {
 	glEnable(GL_SCISSOR_TEST);
 	
 	glScissor(c.x, c.y, c.width, c.height);

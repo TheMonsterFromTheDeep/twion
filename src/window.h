@@ -19,7 +19,7 @@ private:
 	void calculate_viewport(int, int);
 	
 	std::vector<Control*> children;
-	void draw(const Control&);
+	void draw(Control&);
     
     Vec previous_mouse;
 	

@@ -17,14 +17,14 @@ void ScaleSizer::size(Control& c, int winWidth, int winHeight) {
 Control::Control(int x_, int y_, int width_, int height_,RGB bg) :
 	x(x_), y(y_), width(width_), height(height_), background(bg) { }
 
-void Control::render(Graphics g) const {
+void Control::render(Graphics g) {
 	g.rgb(background);
 	g.fill_rect(0, 0, width, height);
 	
 	draw(g);
 }
 	
-void Control::draw(Graphics g) const { }
+void Control::draw(Graphics g) { }
 
 void Control::mouse_move(Vec pos, Vec delta) { }
 void Control::scroll(Vec delta) { }

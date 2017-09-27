@@ -4,6 +4,8 @@
 #include <vector>
 #include "vector.h"
 
+#include "graphics.h"
+
 class CurvePoint {
 public:
     Vec location;
@@ -13,6 +15,9 @@ public:
     CurvePoint(float,float,float);
 };
 
-class Curve : public std::vector<CurvePoint> { };
+class Curve : public std::vector<CurvePoint> {
+public:
+    void stroke(Graphics) const;
+};
 
 #endif

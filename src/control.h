@@ -35,7 +35,7 @@ public:
 	
 	Control(int,int,int,int,RGB bg=RGB(0.8f));
 	
-	void render(Graphics) const;
+	void render(Graphics);
 	
 	virtual void mouse_move(Vec,Vec);
 	virtual void scroll(Vec);
@@ -45,7 +45,7 @@ public:
     
     EventSource *parent;
 protected:
-	virtual void draw(Graphics) const;
+	virtual void draw(Graphics);
 private:
     
 };
