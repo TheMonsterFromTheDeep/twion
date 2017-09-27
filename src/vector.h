@@ -11,6 +11,8 @@ public:
     
     Vec operator+(Vec) const;
     Vec operator-(Vec) const;
+    void operator+=(Vec);
+    void operator-=(Vec);
     
     Vec operator*(float) const;
     Vec operator/(float) const;

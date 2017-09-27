@@ -9,6 +9,9 @@ Vec::Vec(float x_, float y_) : x(x_), y(y_) { }
 Vec Vec::operator+(Vec v) const { return Vec(x + v.x, y + v.y); }
 Vec Vec::operator-(Vec v) const { return Vec(x - v.x, y - v.y); }
 
+void Vec::operator+=(Vec v) { x += v.x; y += v.y; }
+void Vec::operator-=(Vec v) { x -= v.x; y -= v.y; }
+
 Vec Vec::operator*(float s) const { return Vec(x * s, y * s); }
 Vec Vec::operator/(float s) const { return Vec(x / s, y / s); }
 
