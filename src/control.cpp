@@ -23,6 +23,8 @@ void Control::render(Graphics g) {
 	
 	draw(g);
 }
+
+void Control::key(char) { }
 	
 void Control::draw(Graphics g) { }
 

@@ -42,6 +42,16 @@ void Window::callback_mouse_button(GLFWwindow *glfwWin, int button, int action, 
 	}
 }
 
+void Window::callback_key(GLFWwindow *glfwWin, int key, int scancode, int action, int mods) {
+	Window* window = retrieve_window(glfwWin);
+    
+    if(action == GLFW_PRESS) {
+        for(Control* c : window->children) {
+            c->key((char)key);
+        }
+    }
+}
+
 void Window::callback_scroll(GLFWwindow *glfwWin, double scrollx, double scrolly) {
 	Window *window = retrieve_window(glfwWin);
 	
@@ -65,6 +75,7 @@ Window::Window(int width, int height, const char *title) {
 		glfwSetCursorPosCallback(glfwWin, &Window::callback_cursor_position);
 		glfwSetMouseButtonCallback(glfwWin, &Window::callback_mouse_button);
 		glfwSetScrollCallback(glfwWin, &Window::callback_scroll);
+        glfwSetKeyCallback(glfwWin, &Window::callback_key);
 		
 		calculate_viewport(width, height);
 	}

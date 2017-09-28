@@ -9,7 +9,7 @@ SRC_DIR= ./src
 BUILD_DIR= ./build
 
 # Source files
-SRCS= main.cpp vector.cpp curve.cpp cubic.cpp window.cpp control.cpp graphics.cpp editor.cpp
+SRCS= main.cpp vector.cpp curve.cpp cubic.cpp window.cpp control.cpp graphics.cpp editor.cpp editablepoint.cpp
 
 # Object files to build
 OBJS= $(SRCS:%.cpp=%.o)

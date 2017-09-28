@@ -11,6 +11,7 @@ public:
     Vec location;
     float width;
     
+    CurvePoint(const CurvePoint&);
     CurvePoint(Vec,float);
     CurvePoint(float,float,float);
 };

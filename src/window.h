@@ -27,6 +27,7 @@ private:
 	static void callback_cursor_position(GLFWwindow*,double,double);
 	static void callback_mouse_button(GLFWwindow*,int,int,int);
 	static void callback_scroll(GLFWwindow*,double,double);
+    static void callback_key(GLFWwindow*,int,int,int,int);
 	
 	int viewport_right;
 	int viewport_top;
