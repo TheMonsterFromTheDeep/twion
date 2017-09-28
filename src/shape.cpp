@@ -16,6 +16,10 @@ void Shape::generate() {
     }
 }
 
+ShapeEditor *Shape::get_editor() {
+    return new ShapeEditor(this);
+}
+
 void Shape::loop() {
     if(looped) return;
     

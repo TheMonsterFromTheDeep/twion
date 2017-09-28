@@ -22,5 +22,15 @@ private:
     
     Vec getCursor();
     
+    /* This is where a list of all the entities will eventaully
+     * live - although that will also eventually be moved away
+     * further, to another part separate from the editor
+     * in particular.
+     */
     Shape test;
+    /* This is where the more general object-specific editor class
+     * will eventually live; for now its a test for jsut the shape
+     * editor.
+     */
+    ShapeEditor *editor;
 };

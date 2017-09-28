@@ -7,6 +7,8 @@
 #include "graphics.h"
 #include <vector>
 
+class ShapeEditor;
+
 class Shape {
 public:
     Shape();
@@ -16,6 +18,8 @@ public:
     
     void add(CurvePoint,Vec,Vec);
     void draw(Graphics);
+    
+    ShapeEditor *get_editor();
 private:
     std::vector<CurvePoint> points;
     std::vector<Vec> handles;
@@ -24,6 +28,17 @@ private:
     void generate();
     
     bool looped;
+    
+    friend class ShapeEditor;
+};
+
+class ShapeEditor {
+public:
+    ShapeEditor(Shape*);
+
+    Shape *source;
+    
+    void draw(Graphics);
 };
 
 #endif

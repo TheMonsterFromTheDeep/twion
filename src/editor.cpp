@@ -13,7 +13,8 @@ Editor::Editor(int x, int y, int w, int h) :
         test.add(CurvePoint(100, 0, 5, RGB(0, 0, 1)), Vec(-10, 10), Vec(10, -10));
         test.add(CurvePoint(100, -100, 3, RGB(1, 0, 0)), Vec(10, 10), Vec(-10, -10));
         test.loop();
-        //test.add(CurvePoint(100, 100, 1, RGB(0, 0, 0)), Vec(0, -50));
+        
+        editor = test.get_editor();
     }
 	
 Vec Editor::getCursor() {
@@ -75,5 +76,5 @@ void Editor::draw(Graphics g) {
     g.translate(pan);
     g.scale(zoom_amount);
     
-    test.draw(g);
+    editor->draw(g);
 }
