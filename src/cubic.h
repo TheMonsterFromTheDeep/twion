@@ -5,13 +5,13 @@
 
 class InterpolatedCubic {
 public:
-    CurvePoint start;
-    CurvePoint end;
+    CurvePoint *start;
+    CurvePoint *end;
     
-    Vec ease_in;
-    Vec ease_out;
+    Vec *ease_in;
+    Vec *ease_out;
     
-    InterpolatedCubic(CurvePoint,CurvePoint,Vec,Vec);
+    InterpolatedCubic(CurvePoint*,CurvePoint*,Vec*,Vec*);
     
     void calculate();
     

@@ -2,9 +2,12 @@
 #include <cstdlib>
 #include <iostream>
 
-CurvePoint::CurvePoint(const CurvePoint& c) : location(c.location), width(c.width) { }
-CurvePoint::CurvePoint(Vec location_, float width_) : location(location_), width(width_) { }
-CurvePoint::CurvePoint(float x, float y, float width_) : location(x, y), width(width_) { }
+CurvePoint::CurvePoint() : location(), width(), color() { }
+CurvePoint::CurvePoint(const CurvePoint& c) : location(c.location), width(c.width), color(c.color) { }
+CurvePoint::CurvePoint(Vec location_, float width_) : location(location_), width(width_), color() { }
+CurvePoint::CurvePoint(float x, float y, float width_) : location(x, y), width(width_), color() { }
+CurvePoint::CurvePoint(Vec location_, float width_, RGB color_) : location(location_), width(width_), color(color_) { }
+CurvePoint::CurvePoint(float x, float y, float width_, RGB color_) : location(x, y), width(width_), color(color_) { }
 
 void Curve::stroke(Graphics g) const {
     if(size() < 2) return;
@@ -14,6 +17,8 @@ void Curve::stroke(Graphics g) const {
     {
         Vec delta = at(1).location - at(0).location;
         Vec orth = delta.ortho().scaled(at(0).width * 0.5f);
+        
+        g.rgb(at(0).color);
         
         g.point(at(0).location + orth);
         g.point(at(0).location - orth);
@@ -51,6 +56,8 @@ void Curve::stroke(Graphics g) const {
         
         proj = bi * orth.lensqr() / orth.dot(bi);
         
+        g.rgb(at(i).color);
+        
         g.point(at(i).location + proj);
         g.point(at(i).location - proj);
         
@@ -60,6 +67,8 @@ void Curve::stroke(Graphics g) const {
     {
         Vec delta = at(fi).location - at(fi - 1).location;
         Vec orth = delta.ortho().scaled(at(fi).width * 0.5f);
+        
+        g.rgb(at(fi).color);
         
         g.point(at(fi).location + orth);
         g.point(at(fi).location - orth);

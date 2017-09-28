@@ -9,6 +9,8 @@ public:
 	RGB();
 	RGB(float);
 	RGB(float,float,float);
+    
+    RGB interpolate(RGB,float);
 };
 
 class Graphics {

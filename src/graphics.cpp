@@ -7,6 +7,10 @@ RGB::RGB() : r(0), g(0), b(0) { }
 RGB::RGB(float gray) : r(gray), g(gray), b(gray) { }
 RGB::RGB(float r_, float g_, float b_) : r(r_), g(g_), b(b_) { }
 
+RGB RGB::interpolate(RGB other, float t) {
+    return RGB(r + (other.r - r) * t, g + (other.g - g) * t, b + (other.b - b) * t);
+}
+
 Graphics::Graphics(Vec corner_) : corner(corner_) {
 	reset();
 }

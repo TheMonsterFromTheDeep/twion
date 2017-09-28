@@ -1,6 +1,6 @@
 #include "control.h"
 #include "cubic.h"
-#include "editable.h"
+#include "shape.h"
 #include <vector>
 
 class Editor : public Control {
@@ -14,8 +14,6 @@ public:
 protected:
 	virtual void draw(Graphics);
 private:
-	Vec dot;
-	
 	float zoom_exp;
 	float zoom_amount;
     
@@ -24,8 +22,5 @@ private:
     
     Vec getCursor();
     
-    std::vector<Editable*> world;
-    std::vector<Editable*> selected;
-    
-    bool is_editing;
+    Shape test;
 };
