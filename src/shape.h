@@ -11,12 +11,19 @@ class Shape {
 public:
     Shape();
 
+    void loop();
+    void unloop();
+    
     void add(CurvePoint,Vec,Vec);
     void draw(Graphics);
 private:
     std::vector<CurvePoint> points;
     std::vector<Vec> handles;
     std::vector<InterpolatedCubic> curves;
+    
+    void generate();
+    
+    bool looped;
 };
 
 #endif
