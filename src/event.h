@@ -16,6 +16,9 @@ class MouseEvent {
 public:
     MouseButton button;
     MouseAction action;
+    
+    bool shift_down;
+    bool alt_down;
 };
 
 #endif

@@ -67,9 +67,18 @@ private:
         SCALE
     };
     
-    EditState state;
+    enum SelectState {
+        ZERO,
+        ONE,
+        SOME
+    };
     
-    void select(Vec pos);
+    EditState state;
+    SelectState select_state;
+    
+    
+    void select(Vec);
+    void shift_select(Vec);
     void confirm();
     void cancel();
     

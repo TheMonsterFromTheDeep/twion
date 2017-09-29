@@ -37,6 +37,9 @@ void Window::callback_mouse_button(GLFWwindow *glfwWin, int button, int action, 
     if(action == GLFW_PRESS) event.action = PRESS;
     if(action == GLFW_RELEASE) event.action = RELEASE;
     
+    event.shift_down = mods & GLFW_MOD_SHIFT;
+    event.alt_down = mods & GLFW_MOD_ALT;
+    
 	for(Control* c : window->children) {
 		c->mouse_button(event);
 	}
