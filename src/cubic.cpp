@@ -6,10 +6,13 @@ InterpolatedCubic::InterpolatedCubic(CurvePoint *start_, CurvePoint *end_, Vec *
 #define EASE_FACTOR 3
     
 void InterpolatedCubic::calculate() {
+    Vec in_delta = *ease_in - start->location;
+    Vec out_delta = *ease_out - end->location;
+    
     d = start->location;
-    c = *ease_in * EASE_FACTOR;
-    b = (end->location - start->location) * 3 - (*ease_in * EASE_FACTOR) * 2 + (*ease_out * EASE_FACTOR);
-    a = end->location - start->location - (*ease_in * EASE_FACTOR) - b;
+    c = in_delta * EASE_FACTOR;
+    b = (end->location - start->location) * 3 - (in_delta * EASE_FACTOR) * 2 + (out_delta * EASE_FACTOR);
+    a = end->location - start->location - (in_delta * EASE_FACTOR) - b;
 }
 
 CurvePoint InterpolatedCubic::evaluate(float t) {

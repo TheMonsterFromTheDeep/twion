@@ -9,9 +9,9 @@
 Editor::Editor(int x, int y, int w, int h) :
 	Control(x, y, w, h, RGB(0.7f, 0.7f, 0.7f)),
     zoom_exp(0), zoom_amount(1), panning(false), test() {
-        test.add(CurvePoint(0, 0, 1, RGB(0, 1, 0)), Vec(-10, -10), Vec(10, 10));
-        test.add(CurvePoint(100, 0, 5, RGB(0, 0, 1)), Vec(-10, 10), Vec(10, -10));
-        test.add(CurvePoint(100, -100, 3, RGB(1, 0, 0)), Vec(10, 10), Vec(-10, -10));
+        test.add(CurvePoint(0, 0, 1, RGB(0, 1, 0)), Vec(0 - 10, 0 - 10), Vec(0 + 10, 0 + 10));
+        test.add(CurvePoint(100, 0, 5, RGB(0, 0, 1)), Vec(100 - 10, 0 + 10), Vec(100 + 10, 0 - 10));
+        test.add(CurvePoint(100, -100, 3, RGB(1, 0, 0)), Vec(100 + 10, -100 + 10), Vec(100 - 10, -100 - 10));
         test.loop();
         
         editor = test.get_editor();

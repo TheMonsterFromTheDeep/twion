@@ -30,7 +30,7 @@ void ShapeEditor::draw(Graphics g) {
     
     for(int i = 0; i < vecs.size(); ++i) {
         g.rgb(vecs[i].selected ? select : unselect);
-        g.draw_circle(*(vecs[i].source), 5);
+        g.draw_circle(*(vecs[i].source), 3);
     }
 }
 
