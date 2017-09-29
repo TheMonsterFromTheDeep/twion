@@ -73,6 +73,9 @@ private:
         SOME
     };
     
+    bool constrain_x;
+    bool constrain_y;
+    
     EditState state;
     SelectState select_state;
     

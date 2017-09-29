@@ -55,13 +55,26 @@ void ShapeEditor::all_select() {
 }
 
 void ShapeEditor::key(char c, Vec mouse) {
-    if(c == 'G') {
+    if(c == 'G' && select_state != ZERO) {
         state = GRAB;
         action_center = mouse;
         action_delta = Vec();
+        
+        constrain_x = false;
+        constrain_y = false;
     }
     
     if(c == 'A') { all_select(); }
+    
+    if(c == 'X' && select_state != ZERO) {
+        constrain_x = !constrain_x;
+        constrain_y = constrain_y && !constrain_x;
+    }
+    
+    if(c == 'Y' && select_state != ZERO) {
+        constrain_y = !constrain_y;
+        constrain_x = constrain_x && !constrain_y;
+    }
 }
 
 void ShapeEditor::mouse_move(Vec position, Vec delta) {
