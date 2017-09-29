@@ -22,6 +22,7 @@ Vec Editor::getCursor() {
 }
 
 void Editor::key(char c) {
+    editor->key(c, getCursor());
 }
     
 void Editor::mouse_move(Vec position, Vec delta) {
@@ -30,6 +31,8 @@ void Editor::mouse_move(Vec position, Vec delta) {
     }
     
     Vec cursor = getCursor();
+    
+    editor->mouse_move(cursor, delta / zoom_amount);
 }
 
 static bool check(Vec location, Vec mouse) {
@@ -70,6 +73,8 @@ void Editor::mouse_button(MouseEvent e) {
         if(e.action == PRESS) {
         }
     }
+    
+    editor->mouse(e, getCursor());
 }
 
 void Editor::draw(Graphics g) {

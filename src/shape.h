@@ -5,6 +5,7 @@
 #include "cubic.h"
 #include "curve.h"
 #include "graphics.h"
+#include "event.h"
 #include <vector>
 
 class ShapeEditor;
@@ -32,6 +33,22 @@ private:
     friend class ShapeEditor;
 };
 
+class EditCurvePoint {
+public:
+    EditCurvePoint(CurvePoint*);
+
+    CurvePoint *source;
+    bool selected;
+};
+
+class EditVec {
+public:
+    EditVec(Vec*);
+
+    Vec *source;
+    bool selected;
+};
+
 class ShapeEditor {
 public:
     ShapeEditor(Shape*);
@@ -39,6 +56,28 @@ public:
     Shape *source;
     
     void draw(Graphics);
+    void key(char,Vec);
+    void mouse_move(Vec,Vec);
+    void mouse(MouseEvent,Vec);
+private:
+    enum EditState {
+        NONE,
+        GRAB,
+        ROTATE,
+        SCALE
+    };
+    
+    EditState state;
+    
+    void select(Vec pos);
+    void confirm();
+    void cancel();
+    
+    std::vector<EditCurvePoint> curvepoints;
+    std::vector<EditVec> vecs;
+    
+    Vec action_center;
+    Vec action_delta;
 };
 
 #endif
