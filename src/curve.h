@@ -22,6 +22,7 @@ public:
 class Curve : public std::vector<CurvePoint> {
 public:
     void stroke(Graphics) const;
+    void fill(Graphics) const;
 };
 
 #endif

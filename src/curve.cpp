@@ -76,3 +76,15 @@ void Curve::stroke(Graphics g) const {
     
     g.end();
 }
+
+void Curve::fill(Graphics g) const {
+    if(size() < 3) return;
+    
+    g.begin_triangle_fan();
+    
+    for(size_t i = 0; i < size(); ++i) {
+        g.point(at(i).location);
+    }
+    
+    g.end();
+}
