@@ -32,12 +32,36 @@ void ShapeEditor::draw(Graphics g) {
     }
 }
 
+void ShapeEditor::all_select() {
+    
+    /* Select points if none are selected, deselect all selected
+     * points if one or more is selected */
+    bool new_value = (select_state == ZERO);
+    
+    if(new_value) {
+        /* Handle all possible "select all" scenarios */
+        if(curvepoints.size() + vecs.size() == 1) select_state = ONE;
+        else if(curvepoints.size() + vecs.size() > 1) select_state = SOME;
+        else select_state = ZERO;
+    }
+    else { select_state = ZERO; }
+    
+    for(int i = 0; i < curvepoints.size(); ++i) {
+         curvepoints[i].selected = new_value;
+    }
+    for(int i = 0; i < vecs.size(); ++i) {
+         vecs[i].selected = new_value;
+    }
+}
+
 void ShapeEditor::key(char c, Vec mouse) {
     if(c == 'G') {
         state = GRAB;
         action_center = mouse;
         action_delta = Vec();
     }
+    
+    if(c == 'A') { all_select(); }
 }
 
 void ShapeEditor::mouse_move(Vec position, Vec delta) {

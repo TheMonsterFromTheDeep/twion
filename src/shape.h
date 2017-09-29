@@ -76,7 +76,7 @@ private:
     EditState state;
     SelectState select_state;
     
-    
+    void all_select();
     void select(Vec);
     void shift_select(Vec);
     void confirm();
