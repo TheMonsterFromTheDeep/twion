@@ -1,6 +1,23 @@
-# twion
-Right now: not much.
-
 ## todo
-- [ ] Build basic (well structured!) interface.
-- [ ] Implement adding / editing / deleting objects.
+- [ ] Fill colors for shapes
+- [ ] Shape editing
+   - [ ] Transformations in editing
+      - [x] Translation
+      - [ ] Rotation
+      - [ ] Scale
+      - [ ] Various useful pivot points
+   - [ ] Dynamic number of points
+      - [ ] Extrusions
+      - [ ] Creating a new point between points
+   - [ ] Better selection modes
+      - [ ] Lasso select
+      - [ ] Box select
+- [ ] Improve rendering of edit-able components
+   - [ ] Draw lines between handles
+   - [ ] Rendering modes for shapes (i.e. with color, without color)
+- [ ] Shape color editing
+- [ ] Line width editing
+- [ ] General entity editing
+   - [ ] Creation of new shapes
+   - [ ] Parenting of shapes
+
