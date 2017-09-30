@@ -3,7 +3,7 @@
 - [ ] Shape editing
    - [ ] Transformations in editing
       - [x] Translation
-      - [ ] Rotation
+      - [x] Rotation
       - [ ] Scale
       - [ ] Various useful pivot points
    - [ ] Dynamic number of points

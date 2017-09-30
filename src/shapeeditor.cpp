@@ -102,6 +102,13 @@ void ShapeEditor::key(char c, Vec mouse) {
         init_action();
     }
     
+    if(c == 'R' && select_state != ZERO) {
+        state = ROTATE;
+        action_center = mouse;
+        
+        init_action();
+    }
+    
     if(c == 'A') { all_select(); }
     
     if(c == 'X' && select_state != ZERO) {
@@ -130,6 +137,22 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
             for(size_t i = 0; i < vecs.size(); ++i) {
                 if(vecs[i].selected) {
                     *vecs[i].source = vecs_tfrm[i] + translation;
+                }
+            }
+        }
+        break;
+        
+        case ROTATE: {
+            Vec direction = position.rotate_inverse(action_center - action_pivot, action_pivot) - action_pivot;
+            
+            for(size_t i = 0; i < curvepoints.size(); ++i) {
+                if(curvepoints[i].selected) {
+                    curvepoints[i].source->location = curvepoints_tfrm[i].location.rotate(direction, action_pivot);
+                }
+            }
+            for(size_t i = 0; i < vecs.size(); ++i) {
+                if(vecs[i].selected) {
+                    *vecs[i].source = vecs_tfrm[i].rotate(direction, action_pivot);
                 }
             }
         }

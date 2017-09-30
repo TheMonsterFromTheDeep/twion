@@ -37,3 +37,43 @@ Vec Vec::bisector(Vec v) const {
 	if(bisec.lensqr() == 0) bisec = ortho();
 	return bisec;
 }
+
+#define DEG_TO_RAD 0.01745329251
+
+Vec Vec::rotate(float deg, Vec center) {
+    Vec delta = operator-(center);
+    
+    deg *= DEG_TO_RAD;
+    
+    Vec rotated;
+    rotated.x = delta.x * cos(deg) - delta.y * sin(deg);
+    rotated.y = delta.x * sin(deg) + delta.y * cos(deg);
+    
+    return center + rotated;
+}
+
+Vec Vec::rotate(Vec direction, Vec center) {
+    Vec delta = operator-(center);
+    
+    float cos_val = direction.x / direction.len();
+    float sin_val = direction.y / direction.len();
+    
+    Vec rotated;
+    rotated.x = delta.x * cos_val - delta.y * sin_val;
+    rotated.y = delta.x * sin_val + delta.y * cos_val;
+    
+    return center + rotated;
+}
+
+Vec Vec::rotate_inverse(Vec direction, Vec center) {
+    Vec delta = operator-(center);
+    
+    float cos_val = direction.x / direction.len();
+    float sin_val = -direction.y / direction.len();
+    
+    Vec rotated;
+    rotated.x = delta.x * cos_val - delta.y * sin_val;
+    rotated.y = delta.x * sin_val + delta.y * cos_val;
+    
+    return center + rotated;
+}

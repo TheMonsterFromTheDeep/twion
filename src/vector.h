@@ -33,6 +33,10 @@ public:
     Vec ortho() const;
     
     Vec bisector(Vec) const;
+    
+    Vec rotate(float,Vec);
+    Vec rotate(Vec,Vec);
+    Vec rotate_inverse(Vec, Vec);
 };
 
 #endif
