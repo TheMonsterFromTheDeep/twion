@@ -85,12 +85,25 @@ void ShapeEditor::init_action() {
         }
     }
     
+    bool single_handle = divisor == 0 && state == ROTATE;
+    size_t single_index;
+    
     for(size_t i = 0; i < vecs.size(); ++i) {
         vecs_tfrm[i] = *vecs[i].source;
         if(vecs[i].selected) {
             action_pivot += *vecs[i].source;
+            single_index = i;
             ++divisor;
         }
+    }
+    
+    single_handle = single_handle && divisor == 1;
+    
+    /* Basically, if only a single handle is selected, rotate around that
+     * handle's parent control point.
+     */
+    if(single_handle) {
+        action_pivot = curvepoints[single_index / 2].source->location;
     }
     
     if(divisor > 0) {
