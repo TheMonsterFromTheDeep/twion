@@ -1,5 +1,8 @@
 # build directory
 build
 
+# 'ignore' directory
+ignore
+
 # built executable
 twion.exe
