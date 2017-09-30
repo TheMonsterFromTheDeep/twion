@@ -118,14 +118,16 @@ void ShapeEditor::key(char c, Vec mouse) {
     
     if(c == 'A') { all_select(); }
     
-    if(c == 'X' && select_state != ZERO) {
-        constrain_x = !constrain_x;
-        constrain_y = constrain_y && !constrain_x;
-    }
-    
-    if(c == 'Y' && select_state != ZERO) {
-        constrain_y = !constrain_y;
-        constrain_x = constrain_x && !constrain_y;
+    if(state != NONE && state != ROTATE) {
+        if(c == 'X') {
+            constrain_x = !constrain_x;
+            constrain_y = constrain_y && !constrain_x;
+        }
+        
+        if(c == 'Y') {
+            constrain_y = !constrain_y;
+            constrain_x = constrain_x && !constrain_y;
+        }
     }
 }
 
