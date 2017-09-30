@@ -40,6 +40,8 @@ public:
     
     Vec scale(float,Vec);
     Vec scale(Vec,Vec);
+    
+    float angle(Vec);
 };
 
 #endif

@@ -42,6 +42,8 @@ public:
     void line(Vec,float,float);
     void line(float,float,Vec);
     void line(Vec,Vec);
+    
+    void begin_points();
 	
 	void begin_lines();
 	void begin_line_strip();

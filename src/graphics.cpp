@@ -23,6 +23,8 @@ void Graphics::rgb(RGB color) { rgb(color.r, color.g, color.b); }
 
 void Graphics::next_layer() { glClear(GL_DEPTH_BUFFER_BIT); }
 
+void Graphics::begin_points() { glBegin(GL_POINTS); }
+
 void Graphics::begin_lines() { glBegin(GL_LINES); }
 void Graphics::begin_line_strip() { glBegin(GL_LINE_STRIP); }
 void Graphics::begin_line_loop() { glBegin(GL_LINE_LOOP); }

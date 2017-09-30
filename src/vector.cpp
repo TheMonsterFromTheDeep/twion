@@ -90,3 +90,9 @@ Vec Vec::scale(Vec amount, Vec center) {
     delta.y *= amount.y;
     return center + delta;
 }
+
+float Vec::angle(Vec other) {
+    Vec delta = other.operator-(*this);
+    
+    return atan2(delta.y, delta.x);
+}
