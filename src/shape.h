@@ -85,11 +85,16 @@ private:
     void confirm();
     void cancel();
     
+    void init_action();
+    
     std::vector<EditCurvePoint> curvepoints;
     std::vector<EditVec> vecs;
     
+    std::vector<CurvePoint> curvepoints_tfrm;
+    std::vector<Vec> vecs_tfrm;
+    
     Vec action_center;
-    Vec action_delta;
+    Vec action_pivot;
 };
 
 #endif

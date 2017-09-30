@@ -5,13 +5,15 @@
 EditCurvePoint::EditCurvePoint(CurvePoint *source_) : source(source_), selected(false) { }
 EditVec::EditVec(Vec *source_) : source(source_), selected(false) { }
 
-ShapeEditor::ShapeEditor(Shape* source_) : source(source_), state(NONE), select_state(ZERO) {    
+ShapeEditor::ShapeEditor(Shape* source_) : source(source_), constrain_x(false), constrain_y(false), state(NONE), select_state(ZERO) {    
     for(size_t i = 0; i < source->points.size(); ++i) {
         curvepoints.push_back(EditCurvePoint(&(source->points[i])));
+        curvepoints_tfrm.push_back(*curvepoints[i].source);
     }
     
     for(size_t i = 0; i < source->handles.size(); ++i) {
         vecs.push_back(EditVec(&(source->handles[i])));
+        vecs_tfrm.push_back(*vecs[i].source);
     }
 }
 
@@ -29,6 +31,16 @@ void ShapeEditor::draw(Graphics g) {
     for(size_t i = 0; i < vecs.size(); ++i) {
         g.rgb(vecs[i].selected ? select : unselect);
         g.draw_circle(*(vecs[i].source), 3);
+    }
+    
+    if(constrain_x) {
+        g.rgb(1.f, 0.f, 0.f);
+        g.line(action_pivot - Vec(100, 0), action_pivot + Vec(100, 0));
+    }
+    
+    if(constrain_y) {
+        g.rgb(0.f, 1.f, 0.f);
+        g.line(action_pivot - Vec(0, 100), action_pivot + Vec(0, 100));
     }
 }
 
@@ -54,14 +66,40 @@ void ShapeEditor::all_select() {
     }
 }
 
+void ShapeEditor::init_action() {
+    action_pivot = Vec();
+    float divisor = 0;
+    
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+        curvepoints_tfrm[i] = *curvepoints[i].source;
+        if(curvepoints[i].selected) {
+            action_pivot += curvepoints[i].source->location;
+            ++divisor;
+        }
+    }
+    
+    for(size_t i = 0; i < vecs.size(); ++i) {
+        vecs_tfrm[i] = *vecs[i].source;
+        if(vecs[i].selected) {
+            action_pivot += *vecs[i].source;
+            ++divisor;
+        }
+    }
+    
+    if(divisor > 0) {
+        action_pivot /= divisor;
+    }
+     
+    constrain_x = false;
+    constrain_y = false;
+}
+
 void ShapeEditor::key(char c, Vec mouse) {
     if(c == 'G' && select_state != ZERO) {
         state = GRAB;
         action_center = mouse;
-        action_delta = Vec();
         
-        constrain_x = false;
-        constrain_y = false;
+        init_action();
     }
     
     if(c == 'A') { all_select(); }
@@ -77,19 +115,21 @@ void ShapeEditor::key(char c, Vec mouse) {
     }
 }
 
-void ShapeEditor::mouse_move(Vec position, Vec delta) {
-    action_delta += delta;
-    
+void ShapeEditor::mouse_move(Vec position, Vec delta) {    
     switch(state) {
         case GRAB: {
+            Vec translation = position - action_center;
+            if(constrain_x) { translation.y = 0; }
+            if(constrain_y) { translation.x = 0; }
+            
             for(size_t i = 0; i < curvepoints.size(); ++i) {
                 if(curvepoints[i].selected) {
-                    curvepoints[i].source->location += delta;
+                    curvepoints[i].source->location = curvepoints_tfrm[i].location + translation;
                 }
             }
             for(size_t i = 0; i < vecs.size(); ++i) {
                 if(vecs[i].selected) {
-                    *vecs[i].source += delta;
+                    *vecs[i].source = vecs_tfrm[i] + translation;
                 }
             }
         }
@@ -189,31 +229,27 @@ void ShapeEditor::shift_select(Vec pos) {
 }
 
 void ShapeEditor::cancel() {
-    switch(state) {
-        case GRAB: {
-            for(size_t i = 0; i < curvepoints.size(); ++i) {
-                if(curvepoints[i].selected) {
-                    curvepoints[i].source->location -= action_delta;
-                }
-            }
-            for(size_t i = 0; i < vecs.size(); ++i) {
-                if(vecs[i].selected) {
-                    *vecs[i].source -= action_delta;
-                }
-            }
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+        if(curvepoints[i].selected) {
+            curvepoints[i].source->location = curvepoints_tfrm[i].location;
+            curvepoints[i].source->width = curvepoints_tfrm[i].width;
         }
-        break;
-        
-        default: { }
+    }
+    for(size_t i = 0; i < vecs.size(); ++i) {
+        if(vecs[i].selected) {
+            *vecs[i].source = vecs_tfrm[i];
+        }
     }
     
     state = NONE;
-    action_delta = Vec();
+    
+    constrain_x = constrain_y = false;
 }
 
 void ShapeEditor::confirm() {
     state = NONE;
-    action_delta = Vec();
+    
+    constrain_x = constrain_y = false;
 }
 
 void ShapeEditor::mouse(MouseEvent m, Vec pos) {

@@ -3,6 +3,10 @@
 #include "event.h"
 #include <iostream>
 
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE  0x809D
+#endif
+
 int Window::wincount = 0;
 
 static Window* retrieve_window(GLFWwindow *glfwWin) {

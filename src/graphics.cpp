@@ -95,6 +95,18 @@ void Graphics::draw_circle(float cx, float cy, float radius) {
 
 void Graphics::draw_circle(Vec center, float radius) { draw_circle(center.x, center.y, radius); }
 
+void Graphics::line(float sx, float sy, float ex, float ey) {
+    begin_lines();
+    
+    point(sx, sy);
+    point(ex, ey);
+    
+    end();
+}
+void Graphics::line(Vec s, float ex, float ey) { line(s.x, s.y, ex, ey); }
+void Graphics::line(float sx, float sy, Vec e) { line(sx, sy, e.x, e.y); }
+void Graphics::line(Vec s, Vec e) { line(s.x, s.y, e.x, e.y); }
+
 void Graphics::translate(float dx, float dy) { glTranslatef(dx, dy, 0); }
 void Graphics::translate(Vec d) { translate(d.x, d.y); }
 

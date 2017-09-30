@@ -37,6 +37,11 @@ public:
 	
 	void draw_circle(Vec,float);
 	void draw_circle(float,float,float);
+    
+    void line(float,float,float,float);
+    void line(Vec,float,float);
+    void line(float,float,Vec);
+    void line(Vec,Vec);
 	
 	void begin_lines();
 	void begin_line_strip();
