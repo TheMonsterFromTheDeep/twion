@@ -42,6 +42,13 @@ void ShapeEditor::draw(Graphics g) {
         g.rgb(0.f, 1.f, 0.f);
         g.line(action_pivot - Vec(0, 100), action_pivot + Vec(0, 100));
     }
+    
+    if(state != NONE) {
+        g.rgb(0.f, 0.f, 0.f);
+        g.line(action_pivot - Vec(0, 10), action_pivot + Vec(0, 10));
+        g.line(action_pivot - Vec(10, 0), action_pivot + Vec(10, 0));
+        g.draw_circle(action_pivot, 5);
+    }
 }
 
 void ShapeEditor::all_select() {
