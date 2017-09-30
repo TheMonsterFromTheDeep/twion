@@ -37,6 +37,9 @@ public:
     Vec rotate(float,Vec);
     Vec rotate(Vec,Vec);
     Vec rotate_inverse(Vec, Vec);
+    
+    Vec scale(float,Vec);
+    Vec scale(Vec,Vec);
 };
 
 #endif

@@ -4,7 +4,7 @@
    - [ ] Transformations in editing
       - [x] Translation
       - [x] Rotation
-      - [ ] Scale
+      - [x] Scale
       - [ ] Various useful pivot points
    - [ ] Dynamic number of points
       - [ ] Extrusions

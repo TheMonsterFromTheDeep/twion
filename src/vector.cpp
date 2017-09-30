@@ -77,3 +77,16 @@ Vec Vec::rotate_inverse(Vec direction, Vec center) {
     
     return center + rotated;
 }
+
+Vec Vec::scale(float amount, Vec center) {
+    Vec delta = operator-(center);
+    delta *= amount;
+    return center + delta;
+}
+
+Vec Vec::scale(Vec amount, Vec center) {
+    Vec delta = operator-(center);
+    delta.x *= amount.x;
+    delta.y *= amount.y;
+    return center + delta;
+}

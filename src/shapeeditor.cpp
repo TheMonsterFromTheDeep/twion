@@ -85,7 +85,7 @@ void ShapeEditor::init_action() {
         }
     }
     
-    bool single_handle = divisor == 0 && state == ROTATE;
+    bool single_handle = divisor == 0 && (state == ROTATE || state == SCALE);
     size_t single_index;
     
     for(size_t i = 0; i < vecs.size(); ++i) {
@@ -115,18 +115,27 @@ void ShapeEditor::init_action() {
 }
 
 void ShapeEditor::key(char c, Vec mouse) {
-    if(c == 'G' && select_state != ZERO) {
-        state = GRAB;
-        action_center = mouse;
+    if(select_state != ZERO) {
+        if(c == 'G') {
+            state = GRAB;
+            action_center = mouse;
+            
+            init_action();
+        }
         
-        init_action();
-    }
-    
-    if(c == 'R' && select_state != ZERO) {
-        state = ROTATE;
-        action_center = mouse;
+        if(c == 'R') {
+            state = ROTATE;
+            action_center = mouse;
+            
+            init_action();
+        }
         
-        init_action();
+        if(c == 'S') {
+            state = SCALE;
+            action_center = mouse;
+            
+            init_action();
+        }
     }
     
     if(c == 'A') { all_select(); }
@@ -175,6 +184,29 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
             for(size_t i = 0; i < vecs.size(); ++i) {
                 if(vecs[i].selected) {
                     *vecs[i].source = vecs_tfrm[i].rotate(direction, action_pivot);
+                }
+            }
+        }
+        break;
+        
+        case SCALE: {
+            /* This is less efficient than it could be (two square roots, action_center - action_pivot could be cached)
+             * but it doesn't really matter right now.
+             */
+            float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
+            
+            Vec scale(magnitude);
+            if(constrain_x) scale.y = 1;
+            if(constrain_y) scale.x = 1;
+            
+            for(size_t i = 0; i < curvepoints.size(); ++i) {
+                if(curvepoints[i].selected) {
+                    curvepoints[i].source->location = curvepoints_tfrm[i].location.scale(scale, action_pivot);
+                }
+            }
+            for(size_t i = 0; i < vecs.size(); ++i) {
+                if(vecs[i].selected) {
+                    *vecs[i].source = vecs_tfrm[i].scale(scale, action_pivot);
                 }
             }
         }
