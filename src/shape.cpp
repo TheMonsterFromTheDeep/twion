@@ -47,7 +47,6 @@ void Shape::draw(Graphics g) {
     for(InterpolatedCubic& ic : curves) {
         ic.calculate();
         Curve c = ic.generate(0.01f);
-        c.stroke(g);
         calc.push_back(c);
     }
     
@@ -123,4 +122,8 @@ void Shape::draw(Graphics g) {
     }
     
     g.end();
+    
+    for(Curve& c : calc) {
+        c.stroke(g);
+    }
 }

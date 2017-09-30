@@ -7,7 +7,7 @@ enum MouseButton {
     RIGHT
 };
 
-enum MouseAction {
+enum Action {
     PRESS,
     RELEASE
 };
@@ -15,10 +15,21 @@ enum MouseAction {
 class MouseEvent {
 public:
     MouseButton button;
-    MouseAction action;
+    Action action;
     
     bool shift_down;
     bool alt_down;
+    bool control_down;
+};
+
+class KeyEvent {
+public:
+    char key;
+    Action action;
+    
+    bool shift_down;
+    bool alt_down;
+    bool control_down;
 };
 
 #endif

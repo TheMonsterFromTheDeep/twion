@@ -56,7 +56,7 @@ public:
     Shape *source;
     
     void draw(Graphics);
-    void key(char,Vec);
+    void key(KeyEvent,Vec);
     void mouse_move(Vec,Vec);
     void mouse(MouseEvent,Vec);
 private:
@@ -64,7 +64,8 @@ private:
         NONE,
         GRAB,
         ROTATE,
-        SCALE
+        SCALE,
+        THICKEN
     };
     
     enum SelectState {

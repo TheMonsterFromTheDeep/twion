@@ -114,39 +114,46 @@ void ShapeEditor::init_action() {
     constrain_y = false;
 }
 
-void ShapeEditor::key(char c, Vec mouse) {
+void ShapeEditor::key(KeyEvent e, Vec mouse) {
     if(select_state != ZERO) {
-        if(c == 'G') {
+        if(e.key == 'G') {
             state = GRAB;
             action_center = mouse;
             
             init_action();
         }
         
-        if(c == 'R') {
+        if(e.key == 'R') {
             state = ROTATE;
             action_center = mouse;
             
             init_action();
         }
         
-        if(c == 'S') {
+        if(e.key == 'S') {
             state = SCALE;
+            action_center = mouse;
+            
+            init_action();
+        }
+        
+        if(e.key == 'A' && e.control_down) {
+            state = THICKEN;
             action_center = mouse;
             
             init_action();
         }
     }
     
-    if(c == 'A') { all_select(); }
+    if(e.key == 'A' && !e.control_down) { all_select(); }
     
-    if(state != NONE && state != ROTATE) {
-        if(c == 'X') {
+    if(state == GRAB || state == SCALE) {
+        if(e.key == 'X') {
             constrain_x = !constrain_x;
             constrain_y = constrain_y && !constrain_x;
         }
         
-        if(c == 'Y') {
+        if(e.key == 'Y') {
             constrain_y = !constrain_y;
             constrain_x = constrain_x && !constrain_y;
         }
@@ -207,6 +214,17 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
             for(size_t i = 0; i < vecs.size(); ++i) {
                 if(vecs[i].selected) {
                     *vecs[i].source = vecs_tfrm[i].scale(scale, action_pivot);
+                }
+            }
+        }
+        break;
+        
+        case THICKEN: {
+            float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
+            
+            for(size_t i = 0; i < curvepoints.size(); ++i) {
+                if(curvepoints[i].selected) {
+                    curvepoints[i].source->width = curvepoints_tfrm[i].width * magnitude;
                 }
             }
         }

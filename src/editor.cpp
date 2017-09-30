@@ -21,8 +21,10 @@ Vec Editor::getCursor() {
 	return (getMouse() - pan) / zoom_amount;
 }
 
-void Editor::key(char c) {
-    editor->key(c, getCursor());
+void Editor::key(KeyEvent ke) {
+    if(ke.action == PRESS) {
+        editor->key(ke, getCursor());
+    }
 }
     
 void Editor::mouse_move(Vec position, Vec delta) {

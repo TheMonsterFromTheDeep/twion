@@ -43,6 +43,7 @@ void Window::callback_mouse_button(GLFWwindow *glfwWin, int button, int action, 
     
     event.shift_down = mods & GLFW_MOD_SHIFT;
     event.alt_down = mods & GLFW_MOD_ALT;
+    event.control_down = mods & GLFW_MOD_CONTROL;
     
 	for(Control* c : window->children) {
 		c->mouse_button(event);
@@ -52,10 +53,18 @@ void Window::callback_mouse_button(GLFWwindow *glfwWin, int button, int action, 
 void Window::callback_key(GLFWwindow *glfwWin, int key, int scancode, int action, int mods) {
 	Window* window = retrieve_window(glfwWin);
     
-    if(action == GLFW_PRESS) {
-        for(Control* c : window->children) {
-            c->key((char)key);
-        }
+    KeyEvent event;
+    event.key = (char)key;
+    
+    if(action == GLFW_PRESS) event.action = PRESS;
+    if(action == GLFW_RELEASE) event.action = RELEASE;
+    
+    event.shift_down = mods & GLFW_MOD_SHIFT;
+    event.alt_down = mods & GLFW_MOD_ALT;
+    event.control_down = mods & GLFW_MOD_CONTROL;
+    
+    for(Control* c : window->children) {
+        c->key(event);
     }
 }
 
