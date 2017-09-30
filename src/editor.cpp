@@ -35,10 +35,6 @@ void Editor::mouse_move(Vec position, Vec delta) {
     editor->mouse_move(cursor, delta / zoom_amount);
 }
 
-static bool check(Vec location, Vec mouse) {
-	return (location - mouse).lensqr() < 5 * 5;
-}
-
 void Editor::scroll(Vec v) {
 	if(v.y != 0) {
         float old_amount = zoom_amount;
