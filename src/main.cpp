@@ -8,7 +8,7 @@ int main() {
 	Editor editor(0, 0, 400, 400);
 	editor.sizer = new ScaleSizer(0.8f, 1);
 	
-    ColorSelector cs;
+    ColorSelector cs(&editor.editor->edit_color);
     cs.sizer = new ScaleSizer(0.2f, 1, 0.8f);
     
 	w.attach(&editor);

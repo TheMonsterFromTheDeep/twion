@@ -17,7 +17,7 @@ void Window::callback_framebuffer_size(GLFWwindow *glfwWin, int width, int heigh
 void Window::callback_cursor_position(GLFWwindow* glfwWin, double xpos, double ypos) {
 	Window* window = retrieve_window(glfwWin);
 	
-	Vec mouse(xpos, window->viewport_top - ypos);
+	Vec mouse(xpos, ypos);
     Vec delta = mouse - window->previous_mouse;
     window->previous_mouse = mouse;
 	
@@ -42,6 +42,7 @@ void Window::callback_mouse_button(GLFWwindow *glfwWin, int button, int action, 
     event.control_down = mods & GLFW_MOD_CONTROL;
     
 	for(Control* c : window->children) {
+        event.position = window->getMouse() - Vec(c->x, c->y);
 		c->mouse_button(event);
 	}
 }
@@ -111,7 +112,7 @@ void Window::calculate_viewport(int width, int height) {
 	
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, width, 0, height, -20, 20);
+    glOrtho(0, width, height, 0, -20, 20);
     
     glViewport(0, 0, width, height);
 	
@@ -128,7 +129,6 @@ void Window::calculate_viewport(int width, int height) {
 Vec Window::getMouse() {
 	double xpos, ypos;
     glfwGetCursorPos(glfwWin, &xpos, &ypos);
-	ypos = viewport_top - ypos;
 	
 	return Vec(xpos, ypos);
 }

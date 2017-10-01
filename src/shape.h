@@ -59,6 +59,8 @@ public:
     void key(KeyEvent,Vec);
     void mouse_move(Vec,Vec);
     void mouse(MouseEvent,Vec);
+    
+    RGB edit_color;
 private:
     enum EditState {
         NONE,

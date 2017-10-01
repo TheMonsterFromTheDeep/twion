@@ -11,6 +11,12 @@ public:
 	virtual void scroll(Vec);
     virtual void mouse_button(MouseEvent);
     virtual void key(KeyEvent);
+    
+    /* This is where the more general object-specific editor class
+     * will eventually live; for now its a test for jsut the shape
+     * editor.
+     */
+    ShapeEditor *editor;
 protected:
 	virtual void draw(Graphics);
 private:
@@ -28,9 +34,5 @@ private:
      * in particular.
      */
     Shape test;
-    /* This is where the more general object-specific editor class
-     * will eventually live; for now its a test for jsut the shape
-     * editor.
-     */
-    ShapeEditor *editor;
+    
 };

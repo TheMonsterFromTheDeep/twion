@@ -143,6 +143,14 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
             
             init_action();
         }
+        
+        if(e.key == 'C') {
+            for(size_t i = 0; i < curvepoints.size(); ++i) {
+                if(curvepoints[i].selected) {
+                    curvepoints[i].source->color = edit_color;
+                }
+            }
+        }
     }
     
     if(e.key == 'A' && !e.control_down) { all_select(); }

@@ -5,16 +5,21 @@
 
 class ColorSelector : public Control {
     public:
-	ColorSelector();
+	ColorSelector(RGB*);
 
 	virtual void mouse_move(Vec,Vec);
-	virtual void scroll(Vec);
     virtual void mouse_button(MouseEvent);
     virtual void key(KeyEvent);
 protected:
 	virtual void draw(Graphics);
 private:
     Image hsv_wheel;
+    
+    bool editing_color;
+    
+    Vec color_position;
+    
+    RGB *target;
 };
 
 #endif

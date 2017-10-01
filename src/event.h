@@ -17,6 +17,8 @@ public:
     MouseButton button;
     Action action;
     
+    Vec position;
+    
     bool shift_down;
     bool alt_down;
     bool control_down;

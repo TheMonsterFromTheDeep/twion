@@ -37,7 +37,9 @@ Pressing Control-A will thicken the stroke along selected points.
    - [ ] Draw lines between handles
    - [ ] Rendering modes for shapes (i.e. with color, without color)
 - [ ] Shape color editing
-- [ ] Line width editing
+   - [x] Stroke color editing
+   - [ ] Fill color editing
+- [x] Line width editing
 - [ ] General entity editing
    - [ ] Creation of new shapes
    - [ ] Parenting of shapes
