@@ -14,9 +14,12 @@ protected:
 	virtual void draw(Graphics);
 private:
     Image hsv_wheel;
+    Image value_bar;
     
     bool editing_color;
+    bool editing_value;
     
+    float value;
     Vec color_position;
     
     RGB *target;
