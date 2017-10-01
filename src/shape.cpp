@@ -41,89 +41,36 @@ void Shape::add(CurvePoint c, Vec v0, Vec v1) {
     generate();
 }
 
+void fill_unloop(Curve& points, Graphics g) {
+    g.begin_quad_strip();
+    
+    size_t last = points.size() - 1;
+    size_t i = 0;
+    while(i < last - i) {
+        g.rgb(points[i].fill);
+        g.point(points[i].location);
+        g.rgb(points[last - i].fill);
+        g.point(points[last - i].location);
+        ++i;
+    }
+    
+    g.end();
+}
+
 void Shape::draw(Graphics g) {
-    std::vector<Curve> calc;
+    Curve calc;
     
     for(InterpolatedCubic& ic : curves) {
         ic.calculate();
         Curve c = ic.generate(0.01f);
-        calc.push_back(c);
-    }
-    
-    g.rgb(0.5f, 0.5f, 0.5f);
-    g.begin_triangle_fan();
-    
-    float angle_last;
-    bool has_point_1 = false;
-    bool has_point_2 = false;
-    bool has_point_3 = false;
-    
-    bool has_direction = false;
-    
-    bool less_than = false;
-    
-    Vec last;
-    
-    std::vector<Vec> inner_points;
-    
-    for(Curve& c : calc) {
         for(CurvePoint& p : c) {
-            g.point(p.location);
-            
-            if(!has_point_1) {
-                has_point_1 = true;
-                inner_points.push_back(p.location);
-            }
-            else if(!has_point_2) {
-                has_point_2 = true;
-                angle_last = p.location.angle(last);
-            }
-            else if(!has_point_3) {
-                has_point_3 = true;
-                float angle = p.location.angle(last);
-                
-                if(!has_direction) {
-                    if(angle < angle_last) { less_than = true; has_direction = true; }
-                    else if(angle > angle_last) { less_than = false; has_direction = true; }
-                    else has_point_3 = false;
-                }
-                
-                angle_last = angle;
-            }
-            else {
-                float angle = p.location.angle(last);
-                if(angle != angle_last) {
-                    if((angle < angle_last) != less_than) {
-                        has_point_1 = false;
-                        has_point_2 = false;
-                        has_point_3 = false;
-                        
-                        g.end();
-                        g.begin_triangle_fan();
-                        
-                        inner_points.push_back(p.location);
-                    }
-                }
-                angle_last = angle;
-            }
-            
-            last = p.location;
+            calc.push_back(p);
         }
     }
     
-    inner_points.push_back(last);
+    g.rgb(1.f, 1.f, 1.f);
     
-    g.end();
+    fill_unloop(calc, g);
     
-    g.begin_polygon();
-    
-    for(Vec& v : inner_points) {
-        g.point(v);
-    }
-    
-    g.end();
-    
-    for(Curve& c : calc) {
-        c.stroke(g);
-    }
+    calc.stroke(g);
 }

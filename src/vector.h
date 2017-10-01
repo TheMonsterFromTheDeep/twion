@@ -42,6 +42,11 @@ public:
     Vec scale(Vec,Vec);
     
     float angle(Vec);
+    
+    float cross_len(Vec);
+    
+    float cos(Vec);
+    float sin(Vec);
 };
 
 #endif

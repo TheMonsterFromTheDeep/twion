@@ -16,7 +16,7 @@ void InterpolatedCubic::calculate() {
 }
 
 CurvePoint InterpolatedCubic::evaluate(float t) {
-    return CurvePoint(a * t * t * t + b * t * t + c * t + d, start->width + (end->width - start->width) * t, start->color.interpolate(end->color, t));
+    return CurvePoint(a * t * t * t + b * t * t + c * t + d, start->width + (end->width - start->width) * t, start->color.interpolate(end->color, t), start->fill.interpolate(end->fill, t));
 }
     
 Curve InterpolatedCubic::generate(float resolution) {

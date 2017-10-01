@@ -3,11 +3,11 @@
 #include <iostream>
 
 CurvePoint::CurvePoint() : location(), width(), color() { }
-CurvePoint::CurvePoint(const CurvePoint& c) : location(c.location), width(c.width), color(c.color) { }
+CurvePoint::CurvePoint(const CurvePoint& c) : location(c.location), width(c.width), color(c.color), fill(c.fill) { }
 CurvePoint::CurvePoint(Vec location_, float width_) : location(location_), width(width_), color() { }
 CurvePoint::CurvePoint(float x, float y, float width_) : location(x, y), width(width_), color() { }
-CurvePoint::CurvePoint(Vec location_, float width_, RGB color_) : location(location_), width(width_), color(color_) { }
-CurvePoint::CurvePoint(float x, float y, float width_, RGB color_) : location(x, y), width(width_), color(color_) { }
+CurvePoint::CurvePoint(Vec location_, float width_, RGB color_, RGB fill_) : location(location_), width(width_), color(color_), fill(fill_) { }
+CurvePoint::CurvePoint(float x, float y, float width_, RGB color_, RGB fill_) : location(x, y), width(width_), color(color_), fill(fill_) { }
 
 void Curve::stroke(Graphics g) const {
     if(size() < 2) return;

@@ -96,3 +96,15 @@ float Vec::angle(Vec other) {
     
     return atan2(delta.y, delta.x);
 }
+
+float Vec::cross_len(Vec other) {
+    return (x * other.y) - (other.x * y);
+}
+
+float Vec::cos(Vec other) {
+    return dot(other) / (len() * other.len());
+}
+
+float Vec::sin(Vec other) {
+    return cross_len(other) / (len() * other.len());
+}
