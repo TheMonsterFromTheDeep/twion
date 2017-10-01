@@ -79,6 +79,8 @@ Window::Window(int width, int height, const char *title) {
 	if (glfwInit()) {
 		++wincount;
 		
+        glfwWindowHint(GLFW_SAMPLES, 16);
+        
 		glfwWin = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (!glfwWin) { glfwTerminate(); }
 		
@@ -89,6 +91,8 @@ Window::Window(int width, int height, const char *title) {
 		glfwSetMouseButtonCallback(glfwWin, &Window::callback_mouse_button);
 		glfwSetScrollCallback(glfwWin, &Window::callback_scroll);
         glfwSetKeyCallback(glfwWin, &Window::callback_key);
+        
+       
 		
 		calculate_viewport(width, height);
         
@@ -98,11 +102,6 @@ Window::Window(int width, int height, const char *title) {
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, 0);
-            
-           /* TODO: Get these to work */
-           // glEnable(GL_POLYGON_SMOOTH);
-           // glEnable(GL_BLEND);
-           // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
 	}
 }
