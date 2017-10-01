@@ -17,6 +17,8 @@ The pivot point is usually the center of all selected points. However, when a si
 ### other edits
 Pressing Control-A will thicken the stroke along selected points.
 
+Pressing C will update the stroke color of selected control points to the color in the color selector.
+
 ## todo
 - [ ] Fill colors for shapes
 - [ ] Shape editing
