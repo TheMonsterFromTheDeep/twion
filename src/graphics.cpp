@@ -225,16 +225,22 @@ void Graphics::rotate(float angle, float px, float py) {
 }
 void Graphics::rotate(float angle, Vec pivot) { rotate(angle, pivot.x, pivot.y); }
 
-void Graphics::scale(float amount) { glScalef(amount, amount, 1.f); }
+void Graphics::scale(float amount) { glScalef(amount, amount, 1.f); scale_fac *= amount; }
 void Graphics::scale(float amount, float px, float py) {
 	translate(px, py);
 	scale(amount);
 	translate(-px, -py);
+    
+    scale_fac *= amount;
 }
-void Graphics::scale(float amount, Vec pivot) { scale(amount, pivot.x, pivot.y); }
+void Graphics::scale(float amount, Vec pivot) { scale(amount, pivot.x, pivot.y); scale_fac *= amount; }
+
+float Graphics::normalize(float f) { return f / scale_fac; }
 
 void Graphics::reset() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	translate(corner);
+    
+    scale_fac = 1;
 }

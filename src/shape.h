@@ -19,6 +19,7 @@ public:
     
     void add(CurvePoint,Vec,Vec);
     void draw(Graphics);
+    void line(Graphics);
     
     ShapeEditor *get_editor();
 private:

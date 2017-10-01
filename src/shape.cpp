@@ -57,6 +57,20 @@ void fill_unloop(Curve& points, Graphics g) {
     g.end();
 }
 
+void Shape::line(Graphics g) {
+    Curve calc;
+    
+    for(InterpolatedCubic& ic : curves) {
+        ic.calculate();
+        Curve c = ic.generate(0.01f);
+        for(CurvePoint& p : c) {
+            calc.push_back(p);
+        }
+    }
+    
+    calc.line(g);
+}
+
 void Shape::draw(Graphics g) {
     Curve calc;
     

@@ -98,8 +98,12 @@ public:
 	void scale(float,Vec);
 	
 	void reset();
+    
+    float normalize(float);
 private:
 	Vec corner;
+    
+    float scale_fac;
 };
 
 #endif

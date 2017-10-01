@@ -17,20 +17,55 @@ ShapeEditor::ShapeEditor(Shape* source_) : source(source_), constrain_x(false), 
     }
 }
 
+static void diamond(Graphics g, Vec pos, float radius) {
+    g.begin_quad();
+    g.point(pos + Vec(radius, 0));
+    g.point(pos + Vec(0, radius));
+    g.point(pos - Vec(radius, 0));
+    g.point(pos - Vec(0, radius));
+    g.end();
+}
+
+static void draw_control_point(Graphics g, CurvePoint p, bool selected) {
+    float width_0 = g.normalize(6);
+    float width_1 = g.normalize(3);
+    
+    if(selected) g.rgb(1.f, 0.8f, 0.1f);
+    else         g.rgb(0.0f, 0.0f, 0.0f);
+    diamond(g, p.location, width_0);
+    
+    g.rgb(p.color);
+    diamond(g, p.location, width_1);
+}
+
+static void draw_handle(Graphics g, Vec v, bool selected) {
+    float radius = g.normalize(4);
+    
+    if(selected) g.rgb(1.f, 0.8f, 0.1f);
+    else         g.rgb(0.f, 0.f, 0.f);
+    
+    g.draw_circle(v, radius);
+}
+
 void ShapeEditor::draw(Graphics g) {
     source->draw(g);
     
-    RGB unselect(0.f, 0.f, 1.f);
-    RGB select(0.f, 1.f, 1.f);
+    RGB select(1.f, 0.8f, 0.1);
+    RGB unselect(0.f, 0.f, 0.f);
     
     for(size_t i = 0; i < curvepoints.size(); ++i) {
-        g.rgb(curvepoints[i].selected ? select : unselect);
-        g.draw_circle(curvepoints[i].source->location, 5);
+        g.rgb(curvepoints[i].selected && vecs[i * 2].selected ? select : unselect);
+        g.line(curvepoints[i].source->location, *(vecs[i * 2].source));
+        g.rgb(curvepoints[i].selected && vecs[i * 2 + 1].selected ? select : unselect);
+        g.line(curvepoints[i].source->location, *(vecs[1 + (i * 2)].source));
+    }
+    
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+        draw_control_point(g, *curvepoints[i].source, curvepoints[i].selected);
     }
     
     for(size_t i = 0; i < vecs.size(); ++i) {
-        g.rgb(vecs[i].selected ? select : unselect);
-        g.draw_circle(*(vecs[i].source), 3);
+        draw_handle(g, *(vecs[i].source), vecs[i].selected);
     }
     
     if(constrain_x) {
@@ -45,10 +80,17 @@ void ShapeEditor::draw(Graphics g) {
     
     if(state != NONE) {
         g.rgb(0.f, 0.f, 0.f);
-        g.line(action_pivot - Vec(0, 10), action_pivot + Vec(0, 10));
-        g.line(action_pivot - Vec(10, 0), action_pivot + Vec(10, 0));
-        g.draw_circle(action_pivot, 5);
+        
+        float lw = g.normalize(10);
+        float r = g.normalize(5);
+        
+        g.line(action_pivot - Vec(0, lw), action_pivot + Vec(0, lw));
+        g.line(action_pivot - Vec(lw, 0), action_pivot + Vec(lw, 0));
+        g.draw_circle(action_pivot, r);
     }
+    
+    g.rgb(1.f, 0.f, 0.f);
+    source->line(g);
 }
 
 void ShapeEditor::all_select() {

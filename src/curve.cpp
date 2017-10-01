@@ -9,6 +9,16 @@ CurvePoint::CurvePoint(float x, float y, float width_) : location(x, y), width(w
 CurvePoint::CurvePoint(Vec location_, float width_, RGB color_, RGB fill_) : location(location_), width(width_), color(color_), fill(fill_) { }
 CurvePoint::CurvePoint(float x, float y, float width_, RGB color_, RGB fill_) : location(x, y), width(width_), color(color_), fill(fill_) { }
 
+void Curve::line(Graphics g) const {
+    g.begin_line_strip();
+    
+    for(const CurvePoint& p : *this) {
+        g.point(p.location);
+    }
+    
+    g.end();
+}
+
 void Curve::stroke(Graphics g) const {
     if(size() < 2) return;
     
