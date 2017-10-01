@@ -1,6 +1,8 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include "graphics.h"
 
 RGB::RGB() : r(0), g(0), b(0) { }
@@ -10,6 +12,81 @@ RGB::RGB(float r_, float g_, float b_) : r(r_), g(g_), b(b_) { }
 RGB RGB::interpolate(RGB other, float t) {
     return RGB(r + (other.r - r) * t, g + (other.g - g) * t, b + (other.b - b) * t);
 }
+
+/* HSV -> RGB conversion taken from
+ * https://www.cs.rit.edu/~ncs/color/t_convert.html
+*/
+RGB RGB::fromHSV(float h, float s, float v) {
+    RGB out;
+    
+	int i;
+	float f, p, q, t;
+	if( s == 0 ) {
+		// achromatic (grey)
+		out.r = out.g = out.b = v;
+		return out;
+	}
+	h /= 60;			// sector 0 to 5
+	i = floor( h );
+	f = h - i;			// factorial part of h
+	p = v * ( 1 - s );
+	q = v * ( 1 - s * f );
+	t = v * ( 1 - s * ( 1 - f ) );
+	switch( i ) {
+		case 0:
+			out.r = v;
+			out.g = t;
+			out.b = p;
+			break;
+		case 1:
+			out.r = q;
+			out.g = v;
+			out.b = p;
+			break;
+		case 2:
+			out.r = p;
+			out.g = v;
+			out.b = t;
+			break;
+		case 3:
+			out.r = p;
+			out.g = q;
+			out.b = v;
+			break;
+		case 4:
+			out.r = t;
+			out.g = p;
+			out.b = v;
+			break;
+		default:		// case 5:
+			out.r = v;
+			out.g = p;
+			out.b = q;
+			break;
+	}
+    
+    return out;
+}
+
+Image::Image(const char *path) {
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+    
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0); 
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+int Image::get_width() { return width; }
+int Image::get_height() { return height; }
 
 Graphics::Graphics(Vec corner_) : corner(corner_) {
 	reset();
@@ -68,6 +145,34 @@ void Graphics::draw_rect(float x, float y, float width, float height) {
 void Graphics::draw_rect(float x, float y, Vec size) { draw_rect(x, y, size.x, size.y); }
 void Graphics::draw_rect(Vec pos, float w, float h) { draw_rect(pos.x, pos.y, w, h); }
 void Graphics::draw_rect(Vec pos, Vec size) { draw_rect(pos.x, pos.y, size.x, size.y); }
+
+void Graphics::draw_image(Image i, float sx, float sy, float ex, float ey) {
+    glBindTexture(GL_TEXTURE_2D, i.id);
+    
+    glBegin(GL_QUADS);
+    
+        glTexCoord2f(0, 0);
+        glVertex2f(sx, sy);
+        
+        glTexCoord2f(0, 1);
+        glVertex2f(sx, ey);
+        
+        glTexCoord2f(1, 1);
+        glVertex2f(ex, ey);
+        
+        glTexCoord2f(1, 0);
+        glVertex2f(ex, sy);
+    
+    glEnd();
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+void Graphics::draw_image(Image i, Vec s, float ex, float ey) { draw_image(i, s.x, s.y, ex, ey); }
+void Graphics::draw_image(Image i, float sx, float sy, Vec e) { draw_image(i, sx, sy, e.x, e.y); }
+void Graphics::draw_image(Image i, Vec s, Vec e) { draw_image(i, s.x, s.y, e.x, e.y); }
+
+void Graphics::draw_image(Image i, float x, float y) { draw_image(i, x, y, x + i.width, y + i.height); }
+void Graphics::draw_image(Image i, Vec pos) { draw_image(i, pos.x, pos.y); }
 
 void Graphics::fill_circle(float cx, float cy, float radius) {
 	begin_triangle_fan();

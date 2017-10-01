@@ -20,9 +20,10 @@ public:
 class ScaleSizer : public Sizer {
 public:
 	ScaleSizer();
-	ScaleSizer(float,float);
+	ScaleSizer(float,float,float ox_=0,float oy_=0);
 
 	float x, y;
+    float ox, oy;
 	virtual void size(Control&,int,int);
 };
 

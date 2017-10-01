@@ -7,11 +7,14 @@
 void Sizer::size(Control& c, int winWidth, int winHeight) { }
 
 ScaleSizer::ScaleSizer() : x(1), y(1) { }
-ScaleSizer::ScaleSizer(float x_, float y_) : x(x_), y(y_) { }
+ScaleSizer::ScaleSizer(float x_, float y_, float ox_, float oy_) : x(x_), y(y_), ox(ox_), oy(oy_) { }
 
 void ScaleSizer::size(Control& c, int winWidth, int winHeight) {
 	c.width = winWidth * x;
 	c.height = winHeight * y;
+    
+    c.x = winWidth * ox;
+    c.y = winHeight * oy;
 }
 
 Control::Control(int x_, int y_, int width_, int height_,RGB bg) :

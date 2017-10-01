@@ -11,6 +11,22 @@ public:
 	RGB(float,float,float);
     
     RGB interpolate(RGB,float);
+    
+    static RGB fromHSV(float,float,float);
+};
+
+class Image {
+public:
+    Image(const char*);
+
+    int get_width();
+    int get_height();
+private:
+    unsigned int id;
+    
+    int width, height;
+    
+    friend class Graphics;
 };
 
 class Graphics {
@@ -31,6 +47,13 @@ public:
 	void draw_rect(Vec,float,float);
 	void draw_rect(float,float,Vec);
 	void draw_rect(float,float,float,float);
+    
+    void draw_image(Image,float,float,Vec);
+    void draw_image(Image,Vec,float,float);
+    void draw_image(Image,Vec,Vec);
+    void draw_image(Image,float,float);
+    void draw_image(Image,Vec);
+    void draw_image(Image,float,float,float,float);
 	
 	void fill_circle(Vec,float);
 	void fill_circle(float,float,float);

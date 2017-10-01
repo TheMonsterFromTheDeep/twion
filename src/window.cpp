@@ -3,10 +3,6 @@
 #include "event.h"
 #include <iostream>
 
-#ifndef GL_MULTISAMPLE
-#define GL_MULTISAMPLE  0x809D
-#endif
-
 int Window::wincount = 0;
 
 static Window* retrieve_window(GLFWwindow *glfwWin) {
@@ -94,6 +90,19 @@ Window::Window(int width, int height, const char *title) {
         glfwSetKeyCallback(glfwWin, &Window::callback_key);
 		
 		calculate_viewport(width, height);
+        
+        if(wincount == 1) {
+            /* Setup of global OpenGL stuff */
+            
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_ALPHA_TEST);
+            glAlphaFunc(GL_GREATER, 0);
+            
+           /* TODO: Get these to work */
+           // glEnable(GL_POLYGON_SMOOTH);
+           // glEnable(GL_BLEND);
+           // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
 	}
 }
 
