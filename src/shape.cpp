@@ -1,6 +1,8 @@
 #include "shape.h"
 #include <iostream>
 
+#include <GLFW/glfw3.h>
+
 Shape::Shape() : points(), handles(), curves(), looped(false) { }
 
 void Shape::generate() {
