@@ -171,7 +171,7 @@ void Window::open() {
         glfwSwapBuffers(glfwWin);
 
         /* Poll for and process events */
-        glfwPollEvents();
+        glfwWaitEvents();
     }
 
 	--wincount;
