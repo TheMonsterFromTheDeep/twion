@@ -4,7 +4,7 @@
 #include <iostream>
 
 ColorSelector::ColorSelector(RGB *target_) :
-	Control(0, 0, 0, 0, RGB(0.67f, 0.67f, 0.67f)),
+	Control(0, 0, 0, 0, RGB(0.65f, 0.65f, 0.65f)),
     hsv_wheel("hsv.png"), value_bar("value.png"), editing_color(false), editing_value(false), value(1), color_position(0, 0), target(target_) { }
 
 bool ColorSelector::key(KeyEvent ke) {

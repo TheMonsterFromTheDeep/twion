@@ -16,6 +16,7 @@ public:
 
     void loop();
     void unloop();
+    void toggle_loop();
     
     void add(CurvePoint,Vec,Vec);
     void draw(Graphics);

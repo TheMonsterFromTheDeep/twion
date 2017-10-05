@@ -34,6 +34,11 @@ void Shape::unloop() {
     generate();
 }
 
+void Shape::toggle_loop() {
+    looped = !looped;
+    generate();
+}
+
 void Shape::add(CurvePoint c, Vec v0, Vec v1) {
     points.push_back(c);
     handles.push_back(v0);

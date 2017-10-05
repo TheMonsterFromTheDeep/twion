@@ -42,7 +42,7 @@ Pressing C will update the fill color of selected control points to the color in
       - [ ] Extrusions
       - [ ] Creating a new point between points
       - [ ] Deleting points
-      - [ ] Changing whether a shape is looped or not
+      - [x] Changing whether a shape is looped or not
    - [ ] Better selection modes
       - [ ] Lasso select
       - [ ] Box select

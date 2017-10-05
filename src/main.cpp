@@ -10,10 +10,10 @@ int main() {
     v.sizer = new ScaleSizer(1, 1);
     
 	Editor editor(0, 0, 400, 400);
-	editor.sizer = &v; //new ScaleSizer(0.8f, 1);
+	editor.sizer = &v;
 	
     ColorSelector cs(&editor.editor->edit_color);
-    cs.sizer = &v; //new ScaleSizer(0.2f, 1, 0.8f);
+    cs.sizer = &v;
     
     v.attach(&editor);
     v.attach(&cs);
