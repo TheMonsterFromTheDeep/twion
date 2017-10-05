@@ -7,10 +7,10 @@ class Editor : public Control {
 public:
 	Editor(int,int,int,int);
 
-	virtual void mouse_move(Vec,Vec);
-	virtual void scroll(Vec);
-    virtual void mouse_button(MouseEvent);
-    virtual void key(KeyEvent);
+	virtual bool mouse_move(Vec,Vec);
+	virtual bool scroll(Vec);
+    virtual bool mouse_button(MouseEvent);
+    virtual bool key(KeyEvent);
     
     /* This is where the more general object-specific editor class
      * will eventually live; for now its a test for jsut the shape

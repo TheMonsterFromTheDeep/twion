@@ -22,13 +22,15 @@ Vec Editor::getCursor() {
 	return (getMouse() - pan) / zoom_amount;
 }
 
-void Editor::key(KeyEvent ke) {
+bool Editor::key(KeyEvent ke) {
     if(ke.action == PRESS) {
         editor->key(ke, getCursor());
     }
+    
+    return false;
 }
     
-void Editor::mouse_move(Vec position, Vec delta) {
+bool Editor::mouse_move(Vec position, Vec delta) {
     if(panning) {
         pan += delta;
     }
@@ -36,9 +38,11 @@ void Editor::mouse_move(Vec position, Vec delta) {
     Vec cursor = getCursor();
     
     editor->mouse_move(cursor, delta / zoom_amount);
+    
+    return false;
 }
 
-void Editor::scroll(Vec v) {
+bool Editor::scroll(Vec v) {
 	if(v.y != 0) {
         float old_amount = zoom_amount;
         
@@ -53,9 +57,11 @@ void Editor::scroll(Vec v) {
         pan *= old_amount;
         pan += m;
     }
+    
+    return false;
 }
 
-void Editor::mouse_button(MouseEvent e) {
+bool Editor::mouse_button(MouseEvent e) {
     if(e.button == MIDDLE) {
         if(e.action == PRESS) {
             panning = true;
@@ -74,6 +80,8 @@ void Editor::mouse_button(MouseEvent e) {
     }
     
     editor->mouse(e, getCursor());
+    
+    return false;
 }
 
 void Editor::draw(Graphics g) {

@@ -7,12 +7,13 @@ ColorSelector::ColorSelector(RGB *target_) :
 	Control(0, 0, 0, 0, RGB(0.67f, 0.67f, 0.67f)),
     hsv_wheel("hsv.png"), value_bar("value.png"), editing_color(false), editing_value(false), value(1), color_position(0, 0), target(target_) { }
 
-void ColorSelector::key(KeyEvent ke) {
+bool ColorSelector::key(KeyEvent ke) {
+    return false;
 }
     
 #define RAD_TO_DEG 57.2957795131
     
-void ColorSelector::mouse_move(Vec position, Vec delta) {
+bool ColorSelector::mouse_move(Vec position, Vec delta) {
     int size = width - 10;
     Vec center(5 + (size / 2));
     
@@ -35,10 +36,12 @@ void ColorSelector::mouse_move(Vec position, Vec delta) {
         
         *target = RGB::fromHSV(hue, color_position.len(), value);
     }
+    
+    return false;
 }
 
 
-void ColorSelector::mouse_button(MouseEvent e) {
+bool ColorSelector::mouse_button(MouseEvent e) {
     if(e.button == LEFT) {
         int size = width - 10;
         Vec center(5 + (size / 2));
@@ -47,9 +50,11 @@ void ColorSelector::mouse_button(MouseEvent e) {
         int value_height = (size - 10) * (64 / 512.f);
         editing_value = (e.action == PRESS) && (e.position.y > 10 + size && e.position.y < 10 + size + value_height);
     }
+    
+    return false;
 }
 
-void ColorSelector::draw(Graphics g) {
+void ColorSelector::draw(Graphics g) {    
     int size = width - 10;
     
     g.rgb(value, value, value);

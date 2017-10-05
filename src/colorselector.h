@@ -7,9 +7,9 @@ class ColorSelector : public Control {
     public:
 	ColorSelector(RGB*);
 
-	virtual void mouse_move(Vec,Vec);
-    virtual void mouse_button(MouseEvent);
-    virtual void key(KeyEvent);
+	virtual bool mouse_move(Vec,Vec);
+    virtual bool mouse_button(MouseEvent);
+    virtual bool key(KeyEvent);
 protected:
 	virtual void draw(Graphics);
 private:

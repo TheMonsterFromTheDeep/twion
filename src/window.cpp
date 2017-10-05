@@ -22,7 +22,7 @@ void Window::callback_cursor_position(GLFWwindow* glfwWin, double xpos, double y
     window->previous_mouse = mouse;
 	
 	for(Control* c : window->children) {
-		c->mouse_move(mouse - Vec(c->x, c->y), delta);
+		c->mouse_move_(mouse - Vec(c->x, c->y), delta);
 	}
 }
 
@@ -43,7 +43,7 @@ void Window::callback_mouse_button(GLFWwindow *glfwWin, int button, int action, 
     
 	for(Control* c : window->children) {
         event.position = window->getMouse() - Vec(c->x, c->y);
-		c->mouse_button(event);
+		c->mouse_button_(event);
 	}
 }
 
@@ -61,7 +61,7 @@ void Window::callback_key(GLFWwindow *glfwWin, int key, int scancode, int action
     event.control_down = mods & GLFW_MOD_CONTROL;
     
     for(Control* c : window->children) {
-        c->key(event);
+        c->key_(event);
     }
 }
 
@@ -71,7 +71,7 @@ void Window::callback_scroll(GLFWwindow *glfwWin, double scrollx, double scrolly
 	Vec scroll(scrollx, scrolly);
 	
 	for(Control* c : window->children) {
-		c->scroll(scroll);
+		c->scroll_(scroll);
 	}
 }
 
@@ -92,8 +92,6 @@ Window::Window(int width, int height, const char *title) {
 		glfwSetScrollCallback(glfwWin, &Window::callback_scroll);
         glfwSetKeyCallback(glfwWin, &Window::callback_key);
         
-       
-		
 		calculate_viewport(width, height);
         
         if(wincount == 1) {
@@ -120,7 +118,7 @@ void Window::calculate_viewport(int width, int height) {
 	
 	for(Control* c : children) {
 		if(c->sizer != NULL) {
-			c->sizer->size(*c, width, height);
+			c->size(viewport_right, viewport_top);
 		}
 	}
 }
@@ -133,21 +131,21 @@ Vec Window::getMouse() {
 }
 
 void Window::draw(Control& c) {
-	glEnable(GL_SCISSOR_TEST);
+	//glEnable(GL_SCISSOR_TEST);
 	
-	glScissor(c.x, c.y, c.width, c.height);
+	//glScissor(c.x, c.y, c.width, c.height);
 	
 	Graphics gfx(Vec(c.x, c.y));
 	c.render(gfx);
 	
-	glDisable(GL_SCISSOR_TEST);
+	//glDisable(GL_SCISSOR_TEST);
 }
 
 void Window::attach(Control *c) {
     if(!c) return;
     
 	if(c->sizer != NULL) {
-		c->sizer->size(*c, viewport_right, viewport_top);
+		c->size(viewport_right, viewport_top);
 	}
 	
     c->parent = this;
@@ -162,11 +160,11 @@ void Window::open() {
 		glfwMakeContextCurrent(glfwWin);
 		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+        
 		for(Control* child : children) {
 			draw(*child);
 		}
-		
+        
         /* Swap front and back buffers */
         glfwSwapBuffers(glfwWin);
 
