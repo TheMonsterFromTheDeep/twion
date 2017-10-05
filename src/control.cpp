@@ -21,17 +21,16 @@ Control::Control(int x_, int y_, int width_, int height_,RGB bg) :
 	x(x_), y(y_), width(width_), height(height_), background(bg) { }
 
 static void child_draw(Control* c) {
-    //glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_SCISSOR_TEST);
 	
-	//glScissor(c->x, c->y, c->width, c->height);
+	glScissor(c->x, c->y, c->width, c->height);
 	
 	Graphics gfx(Vec(c->x, c->y));
     
-    //glClear(GL_DEPTH_BUFFER_BIT);
 	c->render(gfx);
     
 	
-	//glDisable(GL_SCISSOR_TEST);
+	glDisable(GL_SCISSOR_TEST);
 }
 
 void Control::size(int width, int height) {
@@ -81,7 +80,11 @@ void Control::mouse_button_(MouseEvent e) {
     if(mouse_button(e)) return;
     
     for(Control* c : children) {
-        if(c) c->mouse_button(e);
+        if(c) {
+            MouseEvent child_event = e;
+            child_event.position -= Vec(c->x, c->y);
+            c->mouse_button(child_event);
+        }
     }
 }
 

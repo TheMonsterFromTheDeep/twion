@@ -131,14 +131,14 @@ Vec Window::getMouse() {
 }
 
 void Window::draw(Control& c) {
-	//glEnable(GL_SCISSOR_TEST);
+	glEnable(GL_SCISSOR_TEST);
 	
-	//glScissor(c.x, c.y, c.width, c.height);
+	glScissor(c.x, c.y, c.width, c.height);
 	
 	Graphics gfx(Vec(c.x, c.y));
 	c.render(gfx);
 	
-	//glDisable(GL_SCISSOR_TEST);
+	glDisable(GL_SCISSOR_TEST);
 }
 
 void Window::attach(Control *c) {
