@@ -7,13 +7,11 @@
 #include <cmath>
 
 Editor::Editor(int x, int y, int w, int h) :
-	Control(x, y, w, h, RGB(0.7f, 0.7f, 0.7f)),
+	Control(x, y, w, h, RGB(0.45f, 0.45f, 0.45f)),
     zoom_exp(0), zoom_amount(1), panning(false), test() {
         test.add(CurvePoint(0, 0, 1, RGB(0, 1, 0)), Vec(0 - 10, 0 - 10), Vec(0 + 10, 0 + 10));
         test.add(CurvePoint(100, 0, 5, RGB(0, 0, 1)), Vec(100 - 10, 0 + 10), Vec(100 + 10, 0 - 10));
         test.add(CurvePoint(100, -100, 3, RGB(1, 0, 0)), Vec(100 + 10, -100 + 10), Vec(100 - 10, -100 - 10));
-        //test.add(CurvePoint(200, -200, 3, RGB(1, 0, 0)), Vec(200 + 10, -200 + 10), Vec(200 - 10, -200 - 10));
-        //test.add(CurvePoint(300, -300, 3, RGB(1, 0, 0)), Vec(300 + 10, -300 + 10), Vec(300 - 10, -300 - 10));
         
         editor = test.get_editor();
     }
@@ -22,13 +20,15 @@ Vec Editor::getCursor() {
 	return (getMouse() - pan) / zoom_amount;
 }
 
-void Editor::key(KeyEvent ke) {
+bool Editor::key(KeyEvent ke) {
     if(ke.action == PRESS) {
         editor->key(ke, getCursor());
     }
+    
+    return false;
 }
     
-void Editor::mouse_move(Vec position, Vec delta) {
+bool Editor::mouse_move(Vec position, Vec delta) {
     if(panning) {
         pan += delta;
     }
@@ -36,9 +36,11 @@ void Editor::mouse_move(Vec position, Vec delta) {
     Vec cursor = getCursor();
     
     editor->mouse_move(cursor, delta / zoom_amount);
+    
+    return false;
 }
 
-void Editor::scroll(Vec v) {
+bool Editor::scroll(Vec v) {
 	if(v.y != 0) {
         float old_amount = zoom_amount;
         
@@ -53,9 +55,11 @@ void Editor::scroll(Vec v) {
         pan *= old_amount;
         pan += m;
     }
+    
+    return false;
 }
 
-void Editor::mouse_button(MouseEvent e) {
+bool Editor::mouse_button(MouseEvent e) {
     if(e.button == MIDDLE) {
         if(e.action == PRESS) {
             panning = true;
@@ -74,6 +78,8 @@ void Editor::mouse_button(MouseEvent e) {
     }
     
     editor->mouse(e, getCursor());
+    
+    return false;
 }
 
 void Editor::draw(Graphics g) {

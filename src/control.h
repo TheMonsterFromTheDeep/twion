@@ -1,6 +1,8 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
+#include <vector>
+
 #include "graphics.h"
 #include "vector.h"
 #include "event.h"
@@ -14,7 +16,7 @@ class Control;
 
 class Sizer {
 public:
-	virtual void size(Control&,int,int);
+	virtual void size(Control*,int,int);
 };
 
 class ScaleSizer : public Sizer {
@@ -24,7 +26,7 @@ public:
 
 	float x, y;
     float ox, oy;
-	virtual void size(Control&,int,int);
+	virtual void size(Control*,int,int);
 };
 
 class Control : public EventSource {
@@ -38,18 +40,26 @@ public:
 	
 	void render(Graphics);
 	
-	virtual void mouse_move(Vec,Vec);
-	virtual void scroll(Vec);
-    virtual void mouse_button(MouseEvent);
-    virtual void key(KeyEvent);
+	virtual bool mouse_move(Vec,Vec);
+	virtual bool scroll(Vec);
+    virtual bool mouse_button(MouseEvent);
+    virtual bool key(KeyEvent);
+    
+    void mouse_move_(Vec, Vec);
+    void scroll_(Vec);
+    void mouse_button_(MouseEvent);
+    void key_(KeyEvent);
     
     virtual Vec getMouse();
     
+    void attach(Control*);
+    
     EventSource *parent;
+    
+    void size(int,int);
 protected:
 	virtual void draw(Graphics);
-private:
-    
+    std::vector<Control*> children;
 };
 
 #endif

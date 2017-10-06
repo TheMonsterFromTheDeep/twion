@@ -206,6 +206,8 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
     
     if(e.key == 'A' && !e.control_down) { all_select(); }
     
+    if(e.key == 'L') { source->toggle_loop(); }
+    
     if(state == GRAB || state == SCALE) {
         if(e.key == 'X') {
             constrain_x = !constrain_x;
