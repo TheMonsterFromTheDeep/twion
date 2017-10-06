@@ -9,6 +9,15 @@ CurvePoint::CurvePoint(float x, float y, float width_) : location(x, y), width(w
 CurvePoint::CurvePoint(Vec location_, float width_, RGB color_, RGB fill_) : location(location_), width(width_), color(color_), fill(fill_) { }
 CurvePoint::CurvePoint(float x, float y, float width_, RGB color_, RGB fill_) : location(x, y), width(width_), color(color_), fill(fill_) { }
 
+CurvePoint CurvePoint::interpolate(CurvePoint other, float amount) {
+    CurvePoint point;
+    point.location = location + (other.location - location) * amount;
+    point.width = width + (other.width - width) * amount;
+    point.color = color.interpolate(other.color, amount);
+    point.fill = fill.interpolate(other.fill, amount);
+    return point;
+}
+
 void Curve::line(Graphics g) const {
     g.begin_line_strip();
     

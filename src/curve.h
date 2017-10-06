@@ -18,6 +18,8 @@ public:
     CurvePoint(float,float,float);
     CurvePoint(Vec,float,RGB,RGB fill_=RGB(1.f,1.f,1.f));
     CurvePoint(float,float,float,RGB,RGB fill_=RGB(1.f,1.f,1.f));
+    
+    CurvePoint interpolate(CurvePoint,float);
 };
 
 class Curve : public std::vector<CurvePoint> {

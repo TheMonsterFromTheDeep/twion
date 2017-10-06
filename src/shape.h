@@ -90,6 +90,10 @@ private:
     void confirm();
     void cancel();
     
+    void generate();
+    
+    void split();
+    
     void init_action();
     
     std::vector<EditCurvePoint> curvepoints;

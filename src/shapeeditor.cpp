@@ -1,11 +1,22 @@
 #include <stddef.h>
 
+#include <iostream>
+
 #include "shape.h"
 
 EditCurvePoint::EditCurvePoint(CurvePoint *source_) : source(source_), selected(false) { }
 EditVec::EditVec(Vec *source_) : source(source_), selected(false) { }
 
 ShapeEditor::ShapeEditor(Shape* source_) : source(source_), constrain_x(false), constrain_y(false), state(NONE), select_state(ZERO) {    
+    generate();
+}
+
+void ShapeEditor::generate() {
+    curvepoints.clear();
+    vecs.clear();
+    curvepoints_tfrm.clear();
+    vecs_tfrm.clear();
+    
     for(size_t i = 0; i < source->points.size(); ++i) {
         curvepoints.push_back(EditCurvePoint(&(source->points[i])));
         curvepoints_tfrm.push_back(*curvepoints[i].source);
@@ -166,10 +177,15 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
         }
         
         if(e.key == 'R') {
-            state = ROTATE;
-            action_center = mouse;
-            
-            init_action();
+            if(e.control_down) {
+                split();
+            }
+            else {
+                state = ROTATE;
+                action_center = mouse;
+                
+                init_action();
+            }
         }
         
         if(e.key == 'S') {
@@ -361,6 +377,46 @@ void ShapeEditor::select(Vec pos) {
         
         select_state = new_state;
     }
+}
+
+void ShapeEditor::split() {
+    std::vector<size_t> split_points;
+    
+    for(size_t i = 0; i < curvepoints.size() - 1; ++i) {
+        if(curvepoints[i].selected && curvepoints[i + 1].selected) split_points.push_back(i);
+    }
+    
+    std::vector<CurvePoint> new_points;
+    std::vector<Vec> new_deltas;
+    
+    for(size_t i = 0; i < split_points.size(); ++i) {
+        new_points.push_back(source->curves[split_points[i]].evaluate(0.5f));
+        
+        /* TODO: Figure out why dividing handle length by 2 maintains original shape */
+        new_deltas.push_back(source->curves[split_points[i]].eval_ease_delta(0.5f) / 2);
+        
+        source->handles[i * 2 + 1] = (source->handles[i * 2 + 1] - source->points[i].location) / 2 + source->points[i].location;
+        source->handles[i * 2 + 2] = (source->handles[i * 2 + 2] - source->points[i + 1].location) / 2 + source->points[i + 1].location;
+    }
+    
+    size_t offset = 1;
+    
+    for(size_t i = 0; i < split_points.size(); ++i) {        
+        size_t x = split_points[i] + offset;
+        
+        source->points.insert(source->points.begin() + x, new_points[i]);
+        
+        size_t vp = x * 2;
+        
+        source->handles.insert(source->handles.begin() + vp, new_points[i].location + new_deltas[i]);
+        source->handles.insert(source->handles.begin() + vp, new_points[i].location - new_deltas[i]);
+        
+        source->generate();
+        
+        ++offset;
+    }
+    
+    generate();
 }
 
 void ShapeEditor::shift_select(Vec pos) {

@@ -17,6 +17,8 @@ public:
     
     CurvePoint evaluate(float);
     
+    Vec eval_ease_delta(float);
+    
     Curve generate(float);
 private:
     Vec a, b, c, d;
