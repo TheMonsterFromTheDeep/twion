@@ -3,6 +3,8 @@
 #include "event.h"
 #include <iostream>
 
+#include "cursors.h"
+
 int Window::wincount = 0;
 
 static Window* retrieve_window(GLFWwindow *glfwWin) {
@@ -103,6 +105,7 @@ Window::Window(int width, int height, const char *title) {
             
             glEnable (GL_BLEND); glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
+        set_cursor_window(glfwWin);
 	}
 }
 
@@ -160,6 +163,7 @@ void Window::open() {
 	while (!glfwWindowShouldClose(glfwWin))
     {
 		glfwMakeContextCurrent(glfwWin);
+        set_cursor_window(glfwWin);
 		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         

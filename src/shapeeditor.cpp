@@ -4,6 +4,8 @@
 
 #include "shape.h"
 
+#include "cursors.h"
+
 EditCurvePoint::EditCurvePoint(CurvePoint *source_) : source(source_), selected(false) { }
 EditVec::EditVec(Vec *source_) : source(source_), selected(false) { }
 
@@ -175,6 +177,25 @@ void ShapeEditor::init_action() {
      
     constrain_x = false;
     constrain_y = false;
+    
+    switch(state) {
+        case GRAB:
+        case GRAB_ALONG:
+        case GRAB_CORRECTION:
+            set_cursor(CURSOR_GRAB);
+            break;
+        case ROTATE:
+            set_cursor(CURSOR_ROTATE);
+            break;
+        case SCALE:
+            set_cursor(CURSOR_SCALE);
+            break;
+        case THICKEN:
+            set_cursor(CURSOR_THICKEN);
+            break;
+        default:
+            set_cursor(CURSOR_DEFAULT);
+    }
 }
 
 void ShapeEditor::key(KeyEvent e, Vec mouse) {
@@ -677,12 +698,15 @@ void ShapeEditor::cancel() {
     state = NONE;
     
     constrain_x = constrain_y = false;
+    
+    set_cursor(CURSOR_DEFAULT);
 }
 
 void ShapeEditor::confirm() {
     state = NONE;
     
     constrain_x = constrain_y = false;
+    set_cursor(CURSOR_DEFAULT);
 }
 
 void ShapeEditor::mouse(MouseEvent m, Vec pos) {
