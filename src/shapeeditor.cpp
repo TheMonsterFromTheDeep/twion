@@ -64,18 +64,25 @@ void ShapeEditor::draw(Graphics g) {
     RGB select(1.f, 0.8f, 0.1);
     RGB unselect(0.f, 0.f, 0.f);
     
+    size_t handle_first = (source->looped ? 0 : 1);
+    size_t handle_last =  (source->looped ? vecs.size() - 1 : vecs.size() - 2);
+    
     for(size_t i = 0; i < curvepoints.size(); ++i) {
-        g.rgb(curvepoints[i].selected && vecs[i * 2].selected ? select : unselect);
-        g.line(curvepoints[i].source->location, *(vecs[i * 2].source));
-        g.rgb(curvepoints[i].selected && vecs[i * 2 + 1].selected ? select : unselect);
-        g.line(curvepoints[i].source->location, *(vecs[1 + (i * 2)].source));
+        if(i * 2 >= handle_first) {
+            g.rgb(curvepoints[i].selected && vecs[i * 2].selected ? select : unselect);
+            g.line(curvepoints[i].source->location, *(vecs[i * 2].source));
+        }
+        if(i * 2 + 1 <= handle_last) {
+            g.rgb(curvepoints[i].selected && vecs[i * 2 + 1].selected ? select : unselect);
+            g.line(curvepoints[i].source->location, *(vecs[1 + (i * 2)].source));
+        }
     }
     
     for(size_t i = 0; i < curvepoints.size(); ++i) {
         draw_control_point(g, *curvepoints[i].source, curvepoints[i].selected);
     }
     
-    for(size_t i = 0; i < vecs.size(); ++i) {
+    for(size_t i = handle_first; i <= handle_last; ++i) {
         draw_handle(g, *(vecs[i].source), vecs[i].selected);
     }
     
