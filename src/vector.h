@@ -6,7 +6,7 @@ public:
     float x, y;
     
     Vec();
-    Vec(float);
+    explicit Vec(float);
     Vec(float,float);
     
     Vec operator+(Vec) const;
@@ -20,6 +20,9 @@ public:
     void operator/=(float);
     
     float dot(Vec) const;
+    
+    float component(Vec) const;
+    Vec project(Vec) const;
     
     float len() const;
     float lensqr() const;

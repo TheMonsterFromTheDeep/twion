@@ -20,6 +20,14 @@ void Vec::operator/=(float s) { x /= s; y /= s; }
 
 float Vec::dot(Vec v) const { return x * v.x + y * v.y; }
 
+float Vec::component(Vec v) const {
+    return dot(v) / v.len();
+}
+
+Vec Vec::project(Vec v) const {
+    return (v * dot(v)) / v.lensqr();
+}
+
 float Vec::lensqr() const { return x * x + y * y; }
 
 float Vec::len() const { return sqrt(lensqr()); }
@@ -46,8 +54,8 @@ Vec Vec::rotate(float deg, Vec center) {
     deg *= DEG_TO_RAD;
     
     Vec rotated;
-    rotated.x = delta.x * cos(deg) - delta.y * sin(deg);
-    rotated.y = delta.x * sin(deg) + delta.y * cos(deg);
+    rotated.x = delta.x * ::cos(deg) - delta.y * ::sin(deg);
+    rotated.y = delta.x * ::sin(deg) + delta.y * ::cos(deg);
     
     return center + rotated;
 }

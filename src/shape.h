@@ -96,6 +96,7 @@ private:
     
     void split();
     void extrude();
+    void dir_match();
     
     void init_action();
     

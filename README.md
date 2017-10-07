@@ -42,6 +42,8 @@ Pressing Control-A will thicken the stroke along selected points.
 
 Pressing C will update the fill color of selected control points to the color in the color selector. Shift-C updates the stroke color.
 
+Press Space to cause the selected control points to become "smooth" -- i.e. every selected control point's handles will be modified to be parallel.
+
 ## todo
 - [ ] Fill colors for shapes
 - [ ] Shape editing

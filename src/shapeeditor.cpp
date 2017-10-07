@@ -228,6 +228,10 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
         if(e.key == 'E') {
             extrude();
         }
+        
+        if(e.key == ' ') {
+            dir_match();
+        }
     }
     
     if(e.key == 'A' && !e.control_down) { all_select(); }
@@ -431,6 +435,25 @@ void ShapeEditor::select(Vec pos) {
         }
         
         select_state = new_state;
+    }
+}
+
+void ShapeEditor::dir_match() {
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+        if(curvepoints[i].selected) {
+            Vec pos = curvepoints[i].source->location;
+            
+            Vec delta0 = *vecs[i * 2].source - pos;
+            Vec delta1 = *vecs[i * 2 + 1].source - pos;
+            
+            if(abs(delta0.cross_len(delta1)) > 0.0001f) {
+                Vec bisec = delta0.bisector(delta1);
+                Vec n_delta = bisec.ortho();
+                
+                *vecs[i * 2].source = pos + delta0.project(n_delta);
+                *vecs[i * 2 + 1].source = pos + delta1.project(n_delta);
+            }
+        }
     }
 }
 
