@@ -128,7 +128,10 @@ void ShapeEditor::all_select() {
     for(size_t i = 0; i < curvepoints.size(); ++i) {
          curvepoints[i].selected = new_value;
     }
-    for(size_t i = 0; i < vecs.size(); ++i) {
+    /* In case it's not looped, but there's still something selected from when it was */
+    vecs[0].selected = false;
+    vecs[vecs.size() - 1].selected = false;
+    for(size_t i = (source->looped ? 0 : 1); i < (source->looped ? vecs.size() : vecs.size() - 1); ++i) {
          vecs[i].selected = new_value;
     }
 }
