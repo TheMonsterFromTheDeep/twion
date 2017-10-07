@@ -218,6 +218,10 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
                 }
             }
         }
+        
+        if(e.key == 'E') {
+            extrude();
+        }
     }
     
     if(e.key == 'A' && !e.control_down) { all_select(); }
@@ -417,6 +421,76 @@ void ShapeEditor::split() {
     }
     
     generate();
+}
+
+void ShapeEditor::extrude() {
+    std::vector<size_t> insert_locations;
+    
+    bool is_extrusion = false;
+    
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+        if(curvepoints[i].selected != is_extrusion) {
+            is_extrusion = curvepoints[i].selected;
+            insert_locations.push_back(is_extrusion ? i : i - 1);
+        }
+    }
+    
+    if(is_extrusion) {
+        insert_locations.push_back(curvepoints.size() - 1);
+    }
+    
+    size_t offset = 0;
+    size_t secondary_offset = 1;
+    
+    for(size_t i = 0; i < insert_locations.size(); ++i) {        
+        size_t x = insert_locations[i] + offset;
+        
+        source->points.insert(source->points.begin() + x + secondary_offset, source->points[x]);
+        
+        size_t vp = x * 2;
+        
+        source->handles.insert(source->handles.begin() + vp + 2 * secondary_offset, source->handles[vp + secondary_offset]);
+        source->handles.insert(source->handles.begin() + vp + 2 * secondary_offset, source->handles[vp + (1 - secondary_offset)]);
+        
+        source->generate();
+        
+        ++offset;
+        secondary_offset = 1 - secondary_offset;
+    }
+    
+    generate();
+    
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+         curvepoints[i].selected = false;
+    }
+    for(size_t i = 0; i < vecs.size(); ++i) {
+         vecs[i].selected = false;
+    }
+    
+    offset = 0;
+    secondary_offset = 1;
+    
+    for(size_t i = 0; i < insert_locations.size(); ++i) {        
+        size_t x = insert_locations[i] + offset + secondary_offset;
+        
+        curvepoints[x].selected = true;
+        
+        size_t vp = x * 2;
+        
+        vecs[vp].selected = true;
+        vecs[vp + 1].selected = true;
+        
+        source->generate();
+        
+        ++offset;
+        secondary_offset = 1 - secondary_offset;
+    }
+    
+    state = GRAB;
+    /* TODO: Get actual mouse position for this */
+    action_center = Vec();
+    
+    init_action();
 }
 
 void ShapeEditor::shift_select(Vec pos) {

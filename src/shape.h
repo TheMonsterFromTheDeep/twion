@@ -93,6 +93,7 @@ private:
     void generate();
     
     void split();
+    void extrude();
     
     void init_action();
     
