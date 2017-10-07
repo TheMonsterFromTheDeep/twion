@@ -69,7 +69,8 @@ private:
         GRAB,
         ROTATE,
         SCALE,
-        THICKEN
+        THICKEN,
+        GRAB_CORRECTION
     };
     
     enum SelectState {

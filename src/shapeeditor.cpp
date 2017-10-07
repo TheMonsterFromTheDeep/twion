@@ -170,7 +170,7 @@ void ShapeEditor::init_action() {
 void ShapeEditor::key(KeyEvent e, Vec mouse) {
     if(select_state != ZERO) {
         if(e.key == 'G') {
-            state = GRAB;
+            state = (e.shift_down ? GRAB_CORRECTION : GRAB);
             action_center = mouse;
             
             init_action();
@@ -243,7 +243,8 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
 
 void ShapeEditor::mouse_move(Vec position, Vec delta) {    
     switch(state) {
-        case GRAB: {
+        case GRAB:
+        case GRAB_CORRECTION: {
             Vec translation = position - action_center;
             if(constrain_x) { translation.y = 0; }
             if(constrain_y) { translation.x = 0; }
@@ -253,6 +254,19 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
                     curvepoints[i].source->location = curvepoints_tfrm[i].location + translation;
                 }
             }
+            
+            if(state == GRAB_CORRECTION) {
+                 bool selected = curvepoints[0].selected;
+            
+                for(size_t i = 1; i < curvepoints.size(); ++i) {
+                    if(curvepoints[i].selected != selected) {
+                        selected = curvepoints[i].selected;
+                        *vecs[i * 2 - 1].source = curvepoints[i - 1].source->location + (curvepoints[i].source->location - curvepoints[i - 1].source->location) / 4;
+                        *vecs[i * 2].source = curvepoints[i].source->location + (curvepoints[i - 1].source->location - curvepoints[i].source->location) / 4;
+                    }
+                }
+            }
+            
             for(size_t i = 0; i < vecs.size(); ++i) {
                 if(vecs[i].selected) {
                     *vecs[i].source = vecs_tfrm[i] + translation;
@@ -421,6 +435,16 @@ void ShapeEditor::split() {
     }
     
     generate();
+    
+    /* Deselect all points. (TODO: Make this a function to ensure we always have consistent select_state) */
+    for(size_t i = 0; i < curvepoints.size(); ++i) {
+         curvepoints[i].selected = false;
+    }
+    for(size_t i = 0; i < vecs.size(); ++i) {
+         vecs[i].selected = false;
+    }
+    
+    select_state = ZERO;
 }
 
 void ShapeEditor::extrude() {
@@ -439,7 +463,19 @@ void ShapeEditor::extrude() {
         insert_locations.push_back(curvepoints.size() - 1);
     }
     
+    /* Used to offset the insertion point - because all insertion points past the nth insertion point
+     * are shifted over by n. This is because there are n new points inserted before what was previously
+     * thought to be the insertion point.
+     */
     size_t offset = 0;
+    /* This variable offsets based on whether the next point is the beginning or end of an extrusion sub-section.
+     * Basically, for beginnings of extrusion sub-sections, we want to insert before the *next* point, because
+     * the recorded insert location is the point that we are duplicating, and we want to insert points that are between
+     * it and the endpoint. However, at the end of extrusion sub-sections, we want to insert before the actual point, because
+     * at the end of the extrusion sub-section, before the recorded point is going to be in the direction of inside of the
+     * subsection.
+     * So this variable alternates between 1 and 0 every loop.
+     */
     size_t secondary_offset = 1;
     
     for(size_t i = 0; i < insert_locations.size(); ++i) {        
@@ -449,6 +485,11 @@ void ShapeEditor::extrude() {
         
         size_t vp = x * 2;
         
+        /* This handle code is not quite correct - it doesn't insert the ease_out handle of the endpoint correctly. But
+         * it doesn't matter, because we're doing a correction grab, so that handle will be modified anyways.
+         *
+         * In the future, when this does matter, this will need to be fixed.
+         */
         source->handles.insert(source->handles.begin() + vp + 2 * secondary_offset, source->handles[vp + secondary_offset]);
         source->handles.insert(source->handles.begin() + vp + 2 * secondary_offset, source->handles[vp + (1 - secondary_offset)]);
         
@@ -460,6 +501,7 @@ void ShapeEditor::extrude() {
     
     generate();
     
+    /* First, deselect all points. */
     for(size_t i = 0; i < curvepoints.size(); ++i) {
          curvepoints[i].selected = false;
     }
@@ -467,6 +509,9 @@ void ShapeEditor::extrude() {
          vecs[i].selected = false;
     }
     
+    /* The offset and secondary_offset variables work here in the same way as they
+     * work above.
+     */
     offset = 0;
     secondary_offset = 1;
     
@@ -477,16 +522,29 @@ void ShapeEditor::extrude() {
         
         size_t vp = x * 2;
         
-        vecs[vp].selected = true;
-        vecs[vp + 1].selected = true;
+        vecs[vp + secondary_offset].selected = true;
         
         source->generate();
+        
+        /* Select all points in between extrusion sub-section endpoints.
+         * This is only done if we are currently at the start of an extrusion sub-section:
+         * that is, secondary_offset = 1.
+         */
+        if(secondary_offset) {
+            for(size_t j = x + 1; j < insert_locations[i + 1] + offset + 1; ++j) {
+                curvepoints[j].selected = true;
+                vecs[j * 2].selected = true;
+                vecs[j * 2 + 1].selected = true;
+            }
+        }
         
         ++offset;
         secondary_offset = 1 - secondary_offset;
     }
     
-    state = GRAB;
+    select_state = SOME;
+    
+    state = GRAB_CORRECTION;
     /* TODO: Get actual mouse position for this */
     action_center = Vec();
     
