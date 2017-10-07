@@ -23,7 +23,19 @@ The A key will select / deselect all points.
 ### transformations
 Pressing G, R, or S will translate, rotate, or scale all selected points. Left-click confirms the transformation; right-click cancels it.
 
+While translating or scaling, pressing X or Y will constrain the transformation along that axis. Pressing the key again cancels the constraint.
+
 The pivot point is usually the center of all selected points. However, when a single handle is selected and is being rotated or scaled, the pivot point is set to it's parent control point.
+
+#### translations
+There are multiple other features supported by translations. First, if G is pressed again while translating, "sliding" mode is activated, and points will move along the curve. (Endpoints will not move).
+
+Pressing Shift-G instead of just G enters "corrective translation," which will cause handles outside the points currently being translated to line themselves up with the points currently being translated. It's somewhat difficult to explain; the best way to see how it works is to just test it with multiple combinations of points / handles selected.
+
+### new points
+Pressing Control-R creates new points between selected points, and immediately enters into sliding transformation mode. Right-clicking to exit sliding transformation will cause the new points to be at the center of the old points, as that is where they are created.
+
+Pressing E creates new points as an "extrusion," and then immediately enters into corrective translation mode. Right clicking will not delete the points; rather they will simply lie on the same point as their sources.
 
 ### other edits
 Pressing Control-A will thicken the stroke along selected points.
@@ -39,8 +51,8 @@ Pressing C will update the fill color of selected control points to the color in
       - [x] Scale
       - [ ] Various useful pivot points
    - [ ] Dynamic number of points
-      - [ ] Extrusions
-      - [ ] Creating a new point between points
+      - [x] Extrusions
+      - [x] Creating a new point between points
       - [ ] Deleting points
       - [x] Changing whether a shape is looped or not
    - [ ] Better selection modes
