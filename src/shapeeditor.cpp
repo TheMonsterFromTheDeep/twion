@@ -168,7 +168,13 @@ void ShapeEditor::init_action() {
 }
 
 void ShapeEditor::key(KeyEvent e, Vec mouse) {
-    if(select_state != ZERO) {
+    if(state == GRAB) {
+        if(e.key == 'G') {
+            state = GRAB_ALONG;
+        }
+    }
+    
+    if(select_state != ZERO && state == NONE) {
         if(e.key == 'G') {
             state = (e.shift_down ? GRAB_CORRECTION : GRAB);
             action_center = mouse;
@@ -242,6 +248,8 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
 }
 
 void ShapeEditor::mouse_move(Vec position, Vec delta) {    
+    mouse_last = position;
+
     switch(state) {
         case GRAB:
         case GRAB_CORRECTION: {
@@ -270,6 +278,35 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
             for(size_t i = 0; i < vecs.size(); ++i) {
                 if(vecs[i].selected) {
                     *vecs[i].source = vecs_tfrm[i] + translation;
+                }
+            }
+        }
+        break;
+        
+        case GRAB_ALONG: {
+            float time = (position.x - action_center.x) / 100;
+            if(time > 1) time = 1;
+            if(time < -1) time = -1;
+            size_t offset = 1;
+            if(time < 0) {
+                time = 1 + time;
+                offset = 0;
+            }
+            
+            for(size_t i = 1; i < curvepoints.size() - 1; ++i) {
+                if(curvepoints[i].selected) {
+                    size_t index = i - 1 + offset;
+                    
+                    Vec v0 = vecs_tfrm[2 * index + 1];
+                    Vec v1 = vecs_tfrm[2 * index + 2];
+                    
+                    InterpolatedCubic cubic(&curvepoints_tfrm[index], &curvepoints_tfrm[index + 1], &v0, &v1);
+                    cubic.calculate();
+                    CurvePoint pos = cubic.evaluate(time);
+                    Vec delta = cubic.eval_ease_delta(time);
+                    *curvepoints[i].source = pos;
+                    *vecs[2 * i].source = pos.location - delta;
+                    *vecs[2 * i + 1].source = pos.location + delta;
                 }
             }
         }
@@ -436,7 +473,7 @@ void ShapeEditor::split() {
     
     generate();
     
-    /* Deselect all points. (TODO: Make this a function to ensure we always have consistent select_state) */
+    /* Deselect all points. */
     for(size_t i = 0; i < curvepoints.size(); ++i) {
          curvepoints[i].selected = false;
     }
@@ -444,7 +481,31 @@ void ShapeEditor::split() {
          vecs[i].selected = false;
     }
     
-    select_state = ZERO;
+    /* Select all new points and their handles. */
+    offset = 1;
+    for(size_t i = 0; i < split_points.size(); ++i) {        
+        size_t x = split_points[i] + offset;
+        
+        curvepoints[x].selected = true;
+        
+        size_t vp = x * 2;
+        
+        vecs[vp].selected = true;
+        vecs[vp + 1].selected = true;
+        
+        ++offset;
+    }
+    
+    select_state = SOME;
+    
+    /* Set action to GRAB_ALONG. 
+     * TODO: Make setting action into a function so that it's never
+     * in an inconsistent state.
+     */
+    state = GRAB_ALONG;
+    action_center = mouse_last;
+            
+    init_action();
 }
 
 void ShapeEditor::extrude() {
@@ -545,8 +606,7 @@ void ShapeEditor::extrude() {
     select_state = SOME;
     
     state = GRAB_CORRECTION;
-    /* TODO: Get actual mouse position for this */
-    action_center = Vec();
+    action_center = mouse_last;
     
     init_action();
 }
@@ -574,15 +634,11 @@ void ShapeEditor::shift_select(Vec pos) {
 
 void ShapeEditor::cancel() {
     for(size_t i = 0; i < curvepoints.size(); ++i) {
-        if(curvepoints[i].selected) {
-            curvepoints[i].source->location = curvepoints_tfrm[i].location;
-            curvepoints[i].source->width = curvepoints_tfrm[i].width;
-        }
+        curvepoints[i].source->location = curvepoints_tfrm[i].location;
+        curvepoints[i].source->width = curvepoints_tfrm[i].width;
     }
     for(size_t i = 0; i < vecs.size(); ++i) {
-        if(vecs[i].selected) {
-            *vecs[i].source = vecs_tfrm[i];
-        }
+        *vecs[i].source = vecs_tfrm[i];
     }
     
     state = NONE;

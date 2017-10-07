@@ -70,7 +70,8 @@ private:
         ROTATE,
         SCALE,
         THICKEN,
-        GRAB_CORRECTION
+        GRAB_CORRECTION,
+        GRAB_ALONG
     };
     
     enum SelectState {
@@ -106,6 +107,9 @@ private:
     
     Vec action_center;
     Vec action_pivot;
+    
+    /* TODO: Get this from parent, as we shouldn't need to store it. */
+    Vec mouse_last;
 };
 
 #endif
