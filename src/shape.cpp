@@ -69,7 +69,7 @@ void Shape::line(Graphics g) {
     
     for(InterpolatedCubic& ic : curves) {
         ic.calculate();
-        Curve c = ic.generate(0.01f);
+        Curve c = ic.generate(0.01f, position);
         for(CurvePoint& p : c) {
             calc.push_back(p);
         }
@@ -83,7 +83,7 @@ void Shape::draw(Graphics g) {
     
     for(InterpolatedCubic& ic : curves) {
         ic.calculate();
-        Curve c = ic.generate(0.01f);
+        Curve c = ic.generate(0.01f, position);
         for(CurvePoint& p : c) {
             calc.push_back(p);
         }

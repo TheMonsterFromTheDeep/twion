@@ -6,12 +6,15 @@
 #include "curve.h"
 #include "graphics.h"
 #include "event.h"
+#include "editortype.h"
 #include <vector>
 
 class ShapeEditor;
 
 class Shape {
 public:
+    Vec position;
+
     Shape();
 
     void loop();
@@ -51,16 +54,16 @@ public:
     bool selected;
 };
 
-class ShapeEditor {
+class ShapeEditor : public Editor {
 public:
     ShapeEditor(Shape*);
 
     Shape *source;
     
-    void draw(Graphics);
-    void key(KeyEvent,Vec);
-    void mouse_move(Vec,Vec);
-    void mouse(MouseEvent,Vec);
+    virtual void draw(Graphics);
+    virtual void key(KeyEvent,Vec);
+    virtual void mouse_move(Vec,Vec);
+    virtual void mouse(MouseEvent,Vec);
     
     RGB edit_color;
 private:

@@ -1,9 +1,9 @@
 #include "view.h"
 #include <iostream>
 
-View::View(int x_, int y_, int width_, int height_,RGB bg) :
+View::View(int x_, int y_, int width_, int height_,RGB bg,float amount_) :
 	Control(x_, y_, width_, height_, bg),
-    active(false), amount(0.5f) { }
+    active(false), amount(amount_) { }
     
 bool View::mouse_move(Vec pos, Vec delta) {
     if(active) {

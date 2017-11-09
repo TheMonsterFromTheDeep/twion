@@ -5,6 +5,8 @@
 #include "shape.h"
 
 #include "cursors.h"
+#include "objecteditor.h"
+#include "editor.h"
 
 EditCurvePoint::EditCurvePoint(CurvePoint *source_) : source(source_), selected(false) { }
 EditVec::EditVec(Vec *source_) : source(source_), selected(false) { }
@@ -203,6 +205,11 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
         if(e.key == 'G') {
             state = GRAB_ALONG;
         }
+    }
+    
+    if(e.key == '`') {
+        change_editor(container->get_object_editor());
+        return;
     }
     
     if(select_state != ZERO && state == NONE) {

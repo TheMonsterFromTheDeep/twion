@@ -5,7 +5,7 @@
 
 class View : public Control, public Sizer {
 public:
-    View(int,int,int,int,RGB);
+    View(int,int,int,int,RGB,float s=0.5f);
 
     virtual bool mouse_move(Vec, Vec);
     virtual bool mouse_button(MouseEvent);

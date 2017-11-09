@@ -32,11 +32,13 @@ Vec InterpolatedCubic::eval_ease_delta(float t) {
     return (a * t * t * 3 + b * t * 2 + c) / EASE_FACTOR;
 }
     
-Curve InterpolatedCubic::generate(float resolution) {
+Curve InterpolatedCubic::generate(float resolution, Vec offset) {
     Curve out;
     
     for(float t = 0; t < 1; t += resolution) {
-        out.push_back(evaluate(t));
+        CurvePoint p = evaluate(t);
+        p.location += offset;
+        out.push_back(p);
     }
     
     return out;
