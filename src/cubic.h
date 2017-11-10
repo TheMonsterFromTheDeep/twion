@@ -19,7 +19,7 @@ public:
     
     Vec eval_ease_delta(float);
     
-    Curve generate(float,Vec offset=Vec());
+    Curve generate(float);
 private:
     Vec a, b, c, d;
 };

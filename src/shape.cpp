@@ -67,23 +67,29 @@ void fill_unloop(Curve& points, Graphics g) {
 void Shape::line(Graphics g) {
     Curve calc;
     
+    g.translate(position);
+    
     for(InterpolatedCubic& ic : curves) {
         ic.calculate();
-        Curve c = ic.generate(0.01f, position);
+        Curve c = ic.generate(0.01f);
         for(CurvePoint& p : c) {
             calc.push_back(p);
         }
     }
     
     calc.line(g);
+    
+    g.translate(position * -1);
 }
 
 void Shape::draw(Graphics g) {
     Curve calc;
     
+    g.translate(position);
+    
     for(InterpolatedCubic& ic : curves) {
         ic.calculate();
-        Curve c = ic.generate(0.01f, position);
+        Curve c = ic.generate(0.01f);
         for(CurvePoint& p : c) {
             calc.push_back(p);
         }
@@ -94,4 +100,6 @@ void Shape::draw(Graphics g) {
     fill_unloop(calc, g);
     
     calc.stroke(g);
+    
+    g.translate(position * -1);
 }

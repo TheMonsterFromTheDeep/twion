@@ -53,7 +53,7 @@ void Window::callback_key(GLFWwindow *glfwWin, int key, int scancode, int action
 	Window* window = retrieve_window(glfwWin);
     
     KeyEvent event;
-    event.key = (char)key;
+    event.key = key;
     
     if(action == GLFW_PRESS) event.action = PRESS;
     if(action == GLFW_RELEASE) event.action = RELEASE;

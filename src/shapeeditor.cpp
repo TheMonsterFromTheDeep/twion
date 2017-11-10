@@ -207,7 +207,7 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
         }
     }
     
-    if(e.key == '`') {
+    if(e.key == 258) {
         change_editor(container->get_object_editor());
         return;
     }

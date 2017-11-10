@@ -31,7 +31,7 @@ void ObjectEditor::key(KeyEvent e, Vec mouse) {
         add_circle();
     }
     
-    if(e.key == '`') {
+    if(e.key == 258) {
         change_editor(source->at(0).get_editor());
     }
     

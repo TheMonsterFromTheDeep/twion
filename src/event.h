@@ -26,7 +26,7 @@ public:
 
 class KeyEvent {
 public:
-    char key;
+    int key;
     Action action;
     
     bool shift_down;
