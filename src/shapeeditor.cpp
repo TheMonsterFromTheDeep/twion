@@ -248,7 +248,7 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
         
         if(e.key == 'A' && e.control_down) {
             state = THICKEN;
-            action_center = mouse;
+            action_center = mouse - Vec(10, 0);
             
             init_action();
         }
@@ -401,7 +401,7 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
         break;
         
         case THICKEN: {
-            float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
+            float magnitude = (position - action_center).len() / 10;
             
             for(size_t i = 0; i < curvepoints.size(); ++i) {
                 if(curvepoints[i].selected) {
