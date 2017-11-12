@@ -53,6 +53,9 @@ public:
     virtual Vec getMouse();
     
     void attach(Control*);
+    void reinitialize();
+    
+    void invalidate();
     
     EventSource *parent;
     

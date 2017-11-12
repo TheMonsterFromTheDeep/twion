@@ -7,12 +7,19 @@
 #include "cursors.h"
 #include "objecteditor.h"
 #include "editor.h"
+#include "colorselector.h"
 
 EditCurvePoint::EditCurvePoint(CurvePoint *source_) : source(source_), selected(false) { }
 EditVec::EditVec(Vec *source_) : source(source_), selected(false) { }
 
 ShapeEditor::ShapeEditor(Shape* source_) : source(source_), constrain_x(false), constrain_y(false), state(NONE), select_state(ZERO) {    
     generate();
+}
+
+void ShapeEditor::init_left_menu(Control& menu) {
+    ColorSelector *cs = new ColorSelector(&edit_color);
+    cs->sizer = new ScaleSizer(1.f, 1.f);
+    menu.attach(cs);
 }
 
 void ShapeEditor::generate() {

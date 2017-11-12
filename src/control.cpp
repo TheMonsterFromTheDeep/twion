@@ -32,6 +32,10 @@ static void child_draw(Control* c) {
 	glDisable(GL_SCISSOR_TEST);
 }
 
+void Control::invalidate() {
+    glfwPostEmptyEvent();
+}
+
 void Control::size(int sz_width, int sz_height) {
     if(sizer) sizer->size(this, sz_width, sz_height);
     for(Control* c : children) {
@@ -87,11 +91,17 @@ void Control::mouse_button_(MouseEvent e) {
     }
 }
 
+void Control::reinitialize() {
+    /* TODO: Figure out how to nicely handle deleting pointers so there isn't a memory link */
+    children.clear();
+}
+
 void Control::attach(Control* c) {
     if(!c) return;
     
     children.push_back(c);
     c->parent = this;
+    c->size(width, height);
 }
 
 bool Control::key(KeyEvent e) { return false; }

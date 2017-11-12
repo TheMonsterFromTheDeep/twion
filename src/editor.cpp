@@ -9,7 +9,6 @@
 
 EditorWindow::EditorWindow() : Control(0,0,100,100,RGB(0.45, 0.45, 0.45)),
     left(), right(), container(0, 0, 100, 100), left_view(0, 0, 1, 1, RGB(), 0.3f), right_view(0, 0, 1, 1, RGB(), 0.3f) {
-        std::cout << "editor Window constructor" << std::endl;
         left_view.attach(&left);
         left_view.attach(&container);
         left.sizer = &left_view;
@@ -20,19 +19,21 @@ EditorWindow::EditorWindow() : Control(0,0,100,100,RGB(0.45, 0.45, 0.45)),
         right.sizer = &right_view;
         attach(&right_view);
         right_view.sizer = new ScaleSizer(1.f, 1.f);
-        std::cout << "constructor is complete" << std::endl;
+        
+        container.window = this;
 }
 
 EditorMenu::EditorMenu() : Control(0, 0, 100, 100, RGB(0.6, 0.6, 0.6)) { }
 
 void EditorMenu::draw(Graphics g) {
-    //std::cout << "my width: " << width << std::endl;
 }
 
 void Editor::draw(Graphics g) { }
 void Editor::key(KeyEvent e,Vec v) { }
 void Editor::mouse_move(Vec v,Vec d) { }
 void Editor::mouse(MouseEvent e,Vec v) { }
+void Editor::init_left_menu(Control& menu) { }
+void Editor::init_right_menu(Control& menu) { }
 
 void Editor::parent(EditorContainer *e) {
     container = e;
@@ -60,6 +61,11 @@ void EditorContainer::set_editor(Editor *e) {
     if(e) {        
         editor = e;
         e->parent(this);
+        window->left.reinitialize();
+        e->init_left_menu(window->left);
+        window->right.reinitialize();
+        e->init_right_menu(window->right);
+        invalidate();
     }
 }
 	

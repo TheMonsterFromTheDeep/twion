@@ -65,6 +65,8 @@ public:
     virtual void mouse_move(Vec,Vec);
     virtual void mouse(MouseEvent,Vec);
     
+    virtual void init_left_menu(Control&);
+    
     RGB edit_color;
 private:
     enum EditState {

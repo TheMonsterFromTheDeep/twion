@@ -1,6 +1,8 @@
 #ifndef EDITORTYPE_H
 #define EDITORTYPE_H
 
+#include "control.h"
+
 class EditorContainer;
 
 class Editor {
@@ -11,6 +13,8 @@ public:
     virtual void mouse(MouseEvent,Vec);
     
     void parent(EditorContainer *c);
+    virtual void init_left_menu(Control&);
+    virtual void init_right_menu(Control&);
 protected:
     void change_editor(Editor*);
     EditorContainer *container;
