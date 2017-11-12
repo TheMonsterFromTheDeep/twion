@@ -2,9 +2,18 @@
 #include "cubic.h"
 #include "shape.h"
 #include "editortype.h"
+#include "view.h"
 #include <vector>
 
 class ObjectEditor;
+
+class EditorWindow;
+
+class EditorMenu : public Control {
+public:
+    virtual void draw(Graphics);
+    EditorMenu();
+};
 
 class EditorContainer : public Control {
 public:
@@ -16,6 +25,7 @@ public:
     virtual bool key(KeyEvent);
     
     Editor *editor;
+    EditorWindow *window;
     
     void set_editor(Editor*);
     ObjectEditor *get_object_editor();
@@ -32,4 +42,16 @@ private:
     
     std::vector<Shape> shapes;
     
+};
+
+class EditorWindow : public Control {
+public:
+    EditorMenu left;
+    EditorMenu right;
+    EditorContainer container;
+    
+    EditorWindow();
+private:
+    View left_view;
+    View right_view;
 };

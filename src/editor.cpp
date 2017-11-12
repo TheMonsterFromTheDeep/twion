@@ -7,6 +7,28 @@
 #include <iostream>
 #include <cmath>
 
+EditorWindow::EditorWindow() : Control(0,0,100,100,RGB(0.45, 0.45, 0.45)),
+    left(), right(), container(0, 0, 100, 100), left_view(0, 0, 1, 1, RGB(), 0.3f), right_view(0, 0, 1, 1, RGB(), 0.3f) {
+        std::cout << "editor Window constructor" << std::endl;
+        left_view.attach(&left);
+        left_view.attach(&container);
+        left.sizer = &left_view;
+        container.sizer = &left_view;
+        right_view.attach(&left_view);
+        right_view.attach(&right);
+        left_view.sizer = &right_view;
+        right.sizer = &right_view;
+        attach(&right_view);
+        right_view.sizer = new ScaleSizer(1.f, 1.f);
+        std::cout << "constructor is complete" << std::endl;
+}
+
+EditorMenu::EditorMenu() : Control(0, 0, 100, 100, RGB(0.6, 0.6, 0.6)) { }
+
+void EditorMenu::draw(Graphics g) {
+    //std::cout << "my width: " << width << std::endl;
+}
+
 void Editor::draw(Graphics g) { }
 void Editor::key(KeyEvent e,Vec v) { }
 void Editor::mouse_move(Vec v,Vec d) { }

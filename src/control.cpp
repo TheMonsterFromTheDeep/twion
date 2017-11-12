@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-void Sizer::size(Control* c, int winWidth, int winHeight) { }
+void Sizer::size(Control* c, int winWidth, int winHeight) { std::cout << "an unassigned sizer is being used." << std::endl; }
 
 ScaleSizer::ScaleSizer() : x(1), y(1) { }
 ScaleSizer::ScaleSizer(float x_, float y_, float ox_, float oy_) : x(x_), y(y_), ox(ox_), oy(oy_) { }
@@ -18,7 +18,7 @@ void ScaleSizer::size(Control* c, int winWidth, int winHeight) {
 }
 
 Control::Control(int x_, int y_, int width_, int height_,RGB bg) :
-	x(x_), y(y_), width(width_), height(height_), background(bg) { }
+	x(x_), y(y_), width(width_), height(height_), background(bg), sizer(NULL) { }
 
 static void child_draw(Control* c) {
     glEnable(GL_SCISSOR_TEST);
@@ -29,12 +29,11 @@ static void child_draw(Control* c) {
     
 	c->render(gfx);
     
-	
 	glDisable(GL_SCISSOR_TEST);
 }
 
-void Control::size(int width, int height) {
-    sizer->size(this, width, height);
+void Control::size(int sz_width, int sz_height) {
+    if(sizer) sizer->size(this, sz_width, sz_height);
     for(Control* c : children) {
         if(c) c->size(width, height);
     }
@@ -72,18 +71,18 @@ void Control::scroll_(Vec delta) {
     if(scroll(delta)) return;
     
     for(Control* c : children) {
-        if(c) c->scroll(delta);
+        if(c) c->scroll_(delta);
     }
 }
 
-void Control::mouse_button_(MouseEvent e) {
+void Control::mouse_button_(MouseEvent e) {    
     if(mouse_button(e)) return;
     
     for(Control* c : children) {
         if(c) {
             MouseEvent child_event = e;
             child_event.position -= Vec(c->x, c->y);
-            c->mouse_button(child_event);
+            c->mouse_button_(child_event);
         }
     }
 }
@@ -95,7 +94,7 @@ void Control::attach(Control* c) {
     c->parent = this;
 }
 
-bool Control::key(KeyEvent e) {return false; }
+bool Control::key(KeyEvent e) { return false; }
 	
 void Control::draw(Graphics g) { }
 

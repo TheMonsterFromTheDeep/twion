@@ -14,7 +14,7 @@ int main() {
    // View v(0, 0, 1, 1, RGB(1.f, 0.1f, 0.1f), 0.7f);
     //v.sizer = new ScaleSizer(1, 1);
     
-	EditorContainer editor(0, 0, 400, 400);
+	EditorWindow editor;//0, 0, 400, 400);
 	editor.sizer = new ScaleSizer(1, 1);
 	
     //ColorSelector cs(&editor.editor->edit_color);

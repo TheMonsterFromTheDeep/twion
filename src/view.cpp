@@ -9,8 +9,10 @@ bool View::mouse_move(Vec pos, Vec delta) {
     if(active) {
         amount = pos.x / width;
         
-        size(children[0], width, height);
-        size(children[1], width, height);
+        //size(children[0], width, height);
+        //size(children[1], width, height);
+        children[0]->size(width, height);
+        children[1]->size(width, height);
     }
     
     return active;
@@ -28,20 +30,24 @@ bool View::mouse_button(MouseEvent e) {
     return active;
 }
 
-void View::draw(Graphics g) {    
+void View::draw(Graphics g) {
     g.rgb(0.f, 0.f, 0.f);
     g.line(width * amount, 0, width * amount, height);
 }
 
 void View::size(Control* c, int width, int height) {
+    if(children.size() != 2) {
+        return;
+    }
+    
     if(c == children[0]) {
-        c->x = 0;
+        c->x = x;
         c->y = 0;
         c->width = width * amount;
         c->height = height;
     }
     else if(c == children[1]) {
-        c->x = width * amount;
+        c->x = x + width * amount;
         c->y = 0;
         c->width = width * (1 - amount);
         c->height = height;
