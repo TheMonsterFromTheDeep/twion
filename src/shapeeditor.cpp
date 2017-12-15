@@ -23,7 +23,7 @@ void ShapeEditor::init_left_menu(Control& menu) {
 }
 
 void ShapeEditor::generate() {
-    curvepoints.clear();
+    /*curvepoints.clear();
     vecs.clear();
     curvepoints_tfrm.clear();
     vecs_tfrm.clear();
@@ -36,7 +36,7 @@ void ShapeEditor::generate() {
     for(size_t i = 0; i < source->handles.size(); ++i) {
         vecs.push_back(EditVec(&(source->handles[i])));
         vecs_tfrm.push_back(*vecs[i].source);
-    }
+    }*/
 }
 
 static void diamond(Graphics g, Vec pos, float radius) {
@@ -72,8 +72,21 @@ static void draw_handle(Graphics g, Vec v, bool selected) {
 void ShapeEditor::draw(Graphics g) {
     source->draw(g);
     
-    RGB select(1.f, 0.8f, 0.1);
-    RGB unselect(0.f, 0.f, 0.f);
+	RGB select(1.f, 0.8f, 0.1);
+	RGB unselect(0.f, 0.f, 0.f);
+	
+	g.rgb(select);
+	
+	for(ShapeLine *sl : source->lines) {
+		sl->draw_handles(g);
+	}
+	
+	for(ShapePoint *sp : source->points) {
+		sp->draw(g);
+	}
+	
+   /*
+    
     
     size_t handle_first = (source->looped ? 0 : 1);
     size_t handle_last =  (source->looped ? vecs.size() - 1 : vecs.size() - 2);
@@ -118,6 +131,7 @@ void ShapeEditor::draw(Graphics g) {
         g.draw_circle(action_pivot, r);
     }
     
+	*/
     g.rgb(1.f, 0.f, 0.f);
     source->line(g);
 }
@@ -125,11 +139,11 @@ void ShapeEditor::draw(Graphics g) {
 void ShapeEditor::all_select() {
     
     /* Select points if none are selected, deselect all selected
-     * points if one or more is selected */
+     * points if one or more is selected *
     bool new_value = (select_state == ZERO);
     
     if(new_value) {
-        /* Handle all possible "select all" scenarios */
+        /* Handle all possible "select all" scenarios *
         if(curvepoints.size() + vecs.size() == 1) select_state = ONE;
         else if(curvepoints.size() + vecs.size() > 1) select_state = SOME;
         else select_state = ZERO;
@@ -139,16 +153,16 @@ void ShapeEditor::all_select() {
     for(size_t i = 0; i < curvepoints.size(); ++i) {
          curvepoints[i].selected = new_value;
     }
-    /* In case it's not looped, but there's still something selected from when it was */
+    /* In case it's not looped, but there's still something selected from when it was *
     vecs[0].selected = false;
     vecs[vecs.size() - 1].selected = false;
     for(size_t i = (source->looped ? 0 : 1); i < (source->looped ? vecs.size() : vecs.size() - 1); ++i) {
          vecs[i].selected = new_value;
-    }
+    }*/
 }
 
 void ShapeEditor::init_action() {
-    action_pivot = Vec();
+    /*action_pivot = Vec();
     float divisor = 0;
     
     for(size_t i = 0; i < curvepoints.size(); ++i) {
@@ -175,7 +189,7 @@ void ShapeEditor::init_action() {
     
     /* Basically, if only a single handle is selected, rotate around that
      * handle's parent control point.
-     */
+     *
     if(single_handle) {
         action_pivot = curvepoints[single_index / 2].source->location;
     }
@@ -204,11 +218,11 @@ void ShapeEditor::init_action() {
             break;
         default:
             set_cursor(CURSOR_DEFAULT);
-    }
+    }*/
 }
 
 void ShapeEditor::key(KeyEvent e, Vec mouse) {
-    if(state == GRAB) {
+    /*if(state == GRAB) {
         if(e.key == 'G') {
             state = GRAB_ALONG;
         }
@@ -293,11 +307,11 @@ void ShapeEditor::key(KeyEvent e, Vec mouse) {
             constrain_y = !constrain_y;
             constrain_x = constrain_x && !constrain_y;
         }
-    }
+    }*/
 }
 
 void ShapeEditor::mouse_move(Vec position, Vec delta) {    
-    mouse_last = position;
+    /*mouse_last = position;
 
     switch(state) {
         case GRAB:
@@ -380,7 +394,7 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
         case SCALE: {
             /* This is less efficient than it could be (two square roots, action_center - action_pivot could be cached)
              * but it doesn't really matter right now.
-             */
+             *
             float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
             
             Vec scale(magnitude);
@@ -412,7 +426,7 @@ void ShapeEditor::mouse_move(Vec position, Vec delta) {
         break;
         
         default: { }
-    }
+    }*/
 }
 
 static bool within_radius(Vec a, Vec b) {
@@ -420,7 +434,7 @@ static bool within_radius(Vec a, Vec b) {
 }
 
 void ShapeEditor::select(Vec pos) {
-    bool has_new = false;
+    /*bool has_new = false;
     size_t new_selection = 0;
     
     SelectState new_state = ZERO;
@@ -444,7 +458,7 @@ void ShapeEditor::select(Vec pos) {
              * This simple statement does all of that: whether a particular point is selected
              * is true if it has the same index as the new point, and is false if it doesn't
              * have the same index or if it was already selected.
-             */
+             *
             curvepoints[i].selected = (i == new_selection) && (!curvepoints[i].selected || select_state == SOME);
             if(curvepoints[i].selected) new_state = ONE;
         }
@@ -455,11 +469,11 @@ void ShapeEditor::select(Vec pos) {
         
         select_state = new_state;
         
-        /* A point has already been selected - so no need to look for more. */
+        /* A point has already been selected - so no need to look for more. *
         return;
     }
    
-    /* new_selection is still -1 at this point; does not need to be reset. */
+    /* new_selection is still -1 at this point; does not need to be reset. *
    
     for(size_t i = 0; i < vecs.size(); ++i) {
         if(within_radius(*vecs[i].source, pos)) {
@@ -480,11 +494,11 @@ void ShapeEditor::select(Vec pos) {
         }
         
         select_state = new_state;
-    }
+    }*/
 }
 
 void ShapeEditor::dir_match() {
-    for(size_t i = 0; i < curvepoints.size(); ++i) {
+    /*for(size_t i = 0; i < curvepoints.size(); ++i) {
         if(curvepoints[i].selected) {
             Vec pos = curvepoints[i].source->location;
             
@@ -499,11 +513,11 @@ void ShapeEditor::dir_match() {
                 *vecs[i * 2 + 1].source = pos + delta1.project(n_delta);
             }
         }
-    }
+    }*/
 }
 
 void ShapeEditor::split() {
-    std::vector<size_t> split_points;
+    /*std::vector<size_t> split_points;
     
     for(size_t i = 0; i < curvepoints.size() - 1; ++i) {
         if(curvepoints[i].selected && curvepoints[i + 1].selected) split_points.push_back(i);
@@ -515,7 +529,7 @@ void ShapeEditor::split() {
     for(size_t i = 0; i < split_points.size(); ++i) {
         new_points.push_back(source->curves[split_points[i]].evaluate(0.5f));
         
-        /* TODO: Figure out why dividing handle length by 2 maintains original shape */
+        /* TODO: Figure out why dividing handle length by 2 maintains original shape *
         new_deltas.push_back(source->curves[split_points[i]].eval_ease_delta(0.5f) / 2);
         
         source->handles[i * 2 + 1] = (source->handles[i * 2 + 1] - source->points[i].location) / 2 + source->points[i].location;
@@ -541,7 +555,7 @@ void ShapeEditor::split() {
     
     generate();
     
-    /* Deselect all points. */
+    /* Deselect all points. *
     for(size_t i = 0; i < curvepoints.size(); ++i) {
          curvepoints[i].selected = false;
     }
@@ -549,7 +563,7 @@ void ShapeEditor::split() {
          vecs[i].selected = false;
     }
     
-    /* Select all new points and their handles. */
+    /* Select all new points and their handles. *
     offset = 1;
     for(size_t i = 0; i < split_points.size(); ++i) {        
         size_t x = split_points[i] + offset;
@@ -569,15 +583,15 @@ void ShapeEditor::split() {
     /* Set action to GRAB_ALONG. 
      * TODO: Make setting action into a function so that it's never
      * in an inconsistent state.
-     */
+     *
     state = GRAB_ALONG;
     action_center = mouse_last;
             
-    init_action();
+    init_action();*/
 }
 
 void ShapeEditor::extrude() {
-    std::vector<size_t> insert_locations;
+    /*std::vector<size_t> insert_locations;
     
     bool is_extrusion = false;
     
@@ -595,7 +609,7 @@ void ShapeEditor::extrude() {
     /* Used to offset the insertion point - because all insertion points past the nth insertion point
      * are shifted over by n. This is because there are n new points inserted before what was previously
      * thought to be the insertion point.
-     */
+     *
     size_t offset = 0;
     /* This variable offsets based on whether the next point is the beginning or end of an extrusion sub-section.
      * Basically, for beginnings of extrusion sub-sections, we want to insert before the *next* point, because
@@ -604,7 +618,7 @@ void ShapeEditor::extrude() {
      * at the end of the extrusion sub-section, before the recorded point is going to be in the direction of inside of the
      * subsection.
      * So this variable alternates between 1 and 0 every loop.
-     */
+     *
     size_t secondary_offset = 1;
     
     for(size_t i = 0; i < insert_locations.size(); ++i) {        
@@ -618,7 +632,7 @@ void ShapeEditor::extrude() {
          * it doesn't matter, because we're doing a correction grab, so that handle will be modified anyways.
          *
          * In the future, when this does matter, this will need to be fixed.
-         */
+         *
         source->handles.insert(source->handles.begin() + vp + 2 * secondary_offset, source->handles[vp + secondary_offset]);
         source->handles.insert(source->handles.begin() + vp + 2 * secondary_offset, source->handles[vp + (1 - secondary_offset)]);
         
@@ -630,7 +644,7 @@ void ShapeEditor::extrude() {
     
     generate();
     
-    /* First, deselect all points. */
+    /* First, deselect all points. *
     for(size_t i = 0; i < curvepoints.size(); ++i) {
          curvepoints[i].selected = false;
     }
@@ -640,7 +654,7 @@ void ShapeEditor::extrude() {
     
     /* The offset and secondary_offset variables work here in the same way as they
      * work above.
-     */
+     *
     offset = 0;
     secondary_offset = 1;
     
@@ -658,7 +672,7 @@ void ShapeEditor::extrude() {
         /* Select all points in between extrusion sub-section endpoints.
          * This is only done if we are currently at the start of an extrusion sub-section:
          * that is, secondary_offset = 1.
-         */
+         *
         if(secondary_offset) {
             for(size_t j = x + 1; j < insert_locations[i + 1] + offset + 1; ++j) {
                 curvepoints[j].selected = true;
@@ -676,11 +690,11 @@ void ShapeEditor::extrude() {
     state = GRAB_CORRECTION;
     action_center = mouse_last;
     
-    init_action();
+    init_action();*/
 }
 
 void ShapeEditor::shift_select(Vec pos) {
-    size_t select_count = 0;
+    /*size_t select_count = 0;
     
     for(size_t i = 0; i < curvepoints.size(); ++i) {
         if(within_radius(curvepoints[i].source->location, pos)) {
@@ -697,11 +711,11 @@ void ShapeEditor::shift_select(Vec pos) {
     
     if(select_count > 1) { select_state = SOME; }
     else if(select_count == 1) { select_state = ONE; }
-    else { select_state = ZERO; }
+    else { select_state = ZERO; }*/
 }
 
 void ShapeEditor::cancel() {
-    for(size_t i = 0; i < curvepoints.size(); ++i) {
+    /*for(size_t i = 0; i < curvepoints.size(); ++i) {
         curvepoints[i].source->location = curvepoints_tfrm[i].location;
         curvepoints[i].source->width = curvepoints_tfrm[i].width;
     }
@@ -713,18 +727,18 @@ void ShapeEditor::cancel() {
     
     constrain_x = constrain_y = false;
     
-    set_cursor(CURSOR_DEFAULT);
+    set_cursor(CURSOR_DEFAULT);*/
 }
 
 void ShapeEditor::confirm() {
-    state = NONE;
+    /*state = NONE;
     
     constrain_x = constrain_y = false;
-    set_cursor(CURSOR_DEFAULT);
+    set_cursor(CURSOR_DEFAULT);*/
 }
 
 void ShapeEditor::mouse(MouseEvent m, Vec pos) {
-    if(m.button == RIGHT && m.action == PRESS) {
+    /*if(m.button == RIGHT && m.action == PRESS) {
         if(state == NONE) {
             if(m.shift_down) shift_select(pos);
             else select(pos);
@@ -734,5 +748,5 @@ void ShapeEditor::mouse(MouseEvent m, Vec pos) {
     
     if(m.button == LEFT && m.action == PRESS) {
         if(state != NONE) confirm();
-    }
+    }*/
 }

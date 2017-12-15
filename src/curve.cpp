@@ -54,7 +54,7 @@ void Curve::stroke(Graphics g) const {
         
         Vec delta, orth, bi, proj;
         
-        while((next.location - at(i).location).lensqr() < 0.1f) {
+        while((next.location - at(i).location).lensqr() < 0.001f) {
             if(j == fi) goto next_loop;
             next = at(j);
             ++j;
@@ -62,7 +62,7 @@ void Curve::stroke(Graphics g) const {
         
         j = i - 1;
         
-        while((previous.location - at(i).location).lensqr() < 0.1f) {
+        while((previous.location - at(i).location).lensqr() < 0.001f) {
             if(j == 0) goto next_loop;
             next = at(j);
             --j;

@@ -17,11 +17,11 @@ void ObjectEditor::add_circle() {
     RGB color(0.3f, 1.f, 0.3f);
     
     source->push_back(Shape());
-    Shape *s = &(*source)[source->size() - 1];
+    /*Shape *s = &(*source)[source->size() - 1];
     ADD_CIRCLE_POINT(-radius, 0);
     ADD_CIRCLE_POINT(0, radius);
     ADD_CIRCLE_POINT(radius, 0);
-    ADD_CIRCLE_POINT(0, -radius);
+    ADD_CIRCLE_POINT(0, -radius);*/
     
     if(source->size() == 1) original_pos = Vec();
 }

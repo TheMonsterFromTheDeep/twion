@@ -1,3 +1,4 @@
+#include <iostream>
 #include "cubic.h"
 
 InterpolatedCubic::InterpolatedCubic(CurvePoint *start_, CurvePoint *end_, Vec *ease_in_, Vec *ease_out_) :

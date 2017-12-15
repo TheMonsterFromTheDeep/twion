@@ -11,29 +11,49 @@
 
 class ShapeEditor;
 
+class ShapePoint;
+
+/* TODO: Tighten this and InterpolatedCubic; they're almost the exact
+ * same thing */
+class ShapeLine {
+public:
+    ShapePoint *start;
+	ShapePoint *end;
+	
+	Vec start_handle;
+	Vec end_handle;
+	
+	void draw_handles(Graphics);
+};
+
+class ShapePoint {
+public:
+    CurvePoint data;
+	
+	ShapePoint(const CurvePoint&);
+	
+	void draw(Graphics);
+    
+private:
+    std::vector<ShapeLine*> lines;
+};
+
 class Shape {
 public:
     Vec position;
 
     Shape();
-
-    void loop();
-    void unloop();
-    void toggle_loop();
     
-    void add(CurvePoint,Vec,Vec);
     void draw(Graphics);
     void line(Graphics);
+	
+	ShapePoint* add_point(const CurvePoint&);
+	ShapeLine* add_line(const CurvePoint&, const CurvePoint&, Vec ae=Vec(), Vec be=Vec());
     
     ShapeEditor *get_editor();
 private:
-    std::vector<CurvePoint> points;
-    std::vector<Vec> handles;
-    std::vector<InterpolatedCubic> curves;
-    
-    void generate();
-    
-    bool looped;
+    std::vector<ShapePoint*> points;
+	std::vector<ShapeLine*> lines;
     
     friend class ShapeEditor;
 };
@@ -104,12 +124,6 @@ private:
     void dir_match();
     
     void init_action();
-    
-    std::vector<EditCurvePoint> curvepoints;
-    std::vector<EditVec> vecs;
-    
-    std::vector<CurvePoint> curvepoints_tfrm;
-    std::vector<Vec> vecs_tfrm;
     
     Vec action_center;
     Vec action_pivot;
