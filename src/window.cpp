@@ -166,7 +166,7 @@ void Window::open() {
         set_cursor_window(glfwWin);
 		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+		
 		for(Control* child : children) {
 			draw(*child);
 		}

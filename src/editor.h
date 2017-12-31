@@ -28,6 +28,7 @@ public:
     EditorWindow *window;
     
     void set_editor(Editor*);
+	void init_editor();
     ObjectEditor *get_object_editor();
 protected:
 	virtual void draw(Graphics);
