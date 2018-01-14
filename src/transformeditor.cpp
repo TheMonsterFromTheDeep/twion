@@ -36,8 +36,15 @@ void Transformable::apply() {
 	transform = Transform();
 }
 
+void Transformable::cancel() {
+	on_transform_canceled();
+	/* No need to call transform changed */
+	transform = Transform();
+}
+
 void Transformable::on_transform_changed() { }
 void Transformable::on_transform_applied() { }
+void Transformable::on_transform_canceled() { }
 
 void TransformEditor::all_select() {
 	/* Select points if none are selected, deselect all selected
@@ -115,4 +122,82 @@ void TransformEditor::shift_select(Vec pos) {
 		select_state = ONE;
     else
 		select_state = ZERO;
+}
+
+void TransformEditor::mouse_move(Vec position, Vec delta) {
+	mouse_last = position;
+
+    switch(action) {
+        case ACTION_GRAB: {
+            Vec translation_vec = position - action_center;
+            if(constrain_x) { translation_vec.y = 0; }
+            if(constrain_y) { translation_vec.x = 0; }
+
+			Transform translation = Transform::translation(translation_vec);
+            
+			do_transform_pass([&](Transformable& t) {
+				t.set_transform(translation);
+				return false;
+			});
+        }
+        break;
+        
+        case ACTION_ROTATE: {
+            Vec direction = position.rotate_inverse(action_center - action_pivot, action_pivot) - action_pivot;
+            
+			Transform rotation = Transform::rotation(direction, action_pivot);
+
+			do_transform_pass([&](Transformable& t) {
+				t.set_transform(rotation);
+				return false;
+			});
+        }
+        break;
+        
+        case ACTION_SCALE: {
+            /* This is less efficient than it could be (two square roots, action_center - action_pivot could be cached)
+             * but it doesn't really matter right now.
+             */
+            float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
+            
+            Vec scale_vec(magnitude);
+            if(constrain_x) scale_vec.y = 1;
+            if(constrain_y) scale_vec.x = 1;
+
+			Transform scale = Transform::scale(scale_vec);
+
+			do_transform_pass([&](Transformable& t) {
+				t.set_transform(scale);
+				return false;
+			});
+        }
+        break;
+        
+        default: { }
+    }
+}
+
+void TransformEditor::init_action(int act, Vec center) {
+	action = act;
+	action_center = center;
+
+	constrain_x = constrain_y = false;
+}
+
+void TransformEditor::cancel() {
+	do_transform_pass([](Transformable& t) {
+		t.cancel();
+		return false;
+	});
+
+	action = ACTION_NONE;
+}
+
+void TransformEditor::confirm() {
+	do_transform_pass([](Transformable& t) {
+		t.apply();
+		return false;
+	});
+
+	action = ACTION_NONE;
 }

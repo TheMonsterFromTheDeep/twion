@@ -408,69 +408,7 @@ static bool within_radius(Vec a, Vec b) {
     return (b - a).lensqr() < 5 * 5;
 }
 
-void ShapeEditor::select(Vec pos) {
-    /*bool has_new = false;
-    size_t new_selection = 0;
-    
-    SelectState new_state = ZERO;
-    
-    for(size_t i = 0; i < curvepoints.size(); ++i) {
-        if(within_radius(curvepoints[i].source->location, pos)) {
-            new_selection = i;
-            has_new = true;
-            break;
-        }
-    }
-    
-    if(has_new) {
-        for(size_t i = 0; i < curvepoints.size(); ++i) {
-            /* We want to:
-             * - Unselect all points other than the new one
-             * - Select the new one if it is not selected (i.e. !curvepoints[i].selected)
-             * - Unselected the new one if it is selected
-             * - Always select the new one if more than one is selected (otherwise, if more than one is selected,
-             *   and one that is already selected is selected again, it will become un-selected).
-             * This simple statement does all of that: whether a particular point is selected
-             * is true if it has the same index as the new point, and is false if it doesn't
-             * have the same index or if it was already selected.
-             *
-            curvepoints[i].selected = (i == new_selection) && (!curvepoints[i].selected || select_state == SOME);
-            if(curvepoints[i].selected) new_state = ONE;
-        }
-        
-        for(size_t i = 0; i < vecs.size(); ++i) {
-            vecs[i].selected = false;
-        }
-        
-        select_state = new_state;
-        
-        /* A point has already been selected - so no need to look for more. *
-        return;
-    }
-   
-    /* new_selection is still -1 at this point; does not need to be reset. *
-   
-    for(size_t i = 0; i < vecs.size(); ++i) {
-        if(within_radius(*vecs[i].source, pos)) {
-            new_selection = i;
-            has_new = true;
-            break;
-        }
-    }
-    
-    if(has_new) {
-        for(size_t i = 0; i < vecs.size(); ++i) {
-            vecs[i].selected = (i == new_selection) && (!vecs[i].selected || select_state == SOME);
-            if(vecs[i].selected) new_state = ONE;
-        }
-        
-        for(size_t i = 0; i < curvepoints.size(); ++i) {
-            curvepoints[i].selected = false;
-        }
-        
-        select_state = new_state;
-    }*/
-}
+
 
 void ShapeEditor::dir_match() {
     /*for(size_t i = 0; i < curvepoints.size(); ++i) {
@@ -668,26 +606,7 @@ void ShapeEditor::extrude() {
     init_action();*/
 }
 
-void ShapeEditor::shift_select(Vec pos) {
-    /*size_t select_count = 0;
-    
-    for(size_t i = 0; i < curvepoints.size(); ++i) {
-        if(within_radius(curvepoints[i].source->location, pos)) {
-            curvepoints[i].selected = !curvepoints[i].selected;
-        }
-        if(curvepoints[i].selected) ++select_count;
-    }
-    for(size_t i = 0; i < vecs.size(); ++i) {
-        if(within_radius(*vecs[i].source, pos)) {
-            vecs[i].selected = !vecs[i].selected;
-        }
-        if(vecs[i].selected) ++select_count;
-    }
-    
-    if(select_count > 1) { select_state = SOME; }
-    else if(select_count == 1) { select_state = ONE; }
-    else { select_state = ZERO; }*/
-}
+
 
 void ShapeEditor::cancel() {
     /*for(size_t i = 0; i < curvepoints.size(); ++i) {

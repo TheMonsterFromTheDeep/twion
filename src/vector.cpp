@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "vector.h"
 
 #include <cmath>
@@ -45,8 +46,6 @@ Vec Vec::bisector(Vec v) const {
 	if(bisec.lensqr() == 0) bisec = ortho();
 	return bisec;
 }
-
-#define DEG_TO_RAD 0.01745329251
 
 Vec Vec::rotate(float deg, Vec center) {
     Vec delta = operator-(center);

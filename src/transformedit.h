@@ -5,6 +5,12 @@
 #include "transform.h"
 #include <functional>
 
+/* Actions implemented by general TransformEditor */
+#define ACTION_NONE   0
+#define ACTION_GRAB   1
+#define ACTION_ROTATE 2
+#define ACTION_SCALE  3
+
 class Selectable {
 public:
 	Selectable();
@@ -28,9 +34,11 @@ public:
 	void set_transform(const Transform&);
 	const Transform& get_transform();
 	void apply();
+	void cancel();
 protected:
 	virtual void on_transform_changed();
 	virtual void on_transform_applied();
+	virtual void on_transform_canceled();
 private:
 	Transform transform;
 };
@@ -55,15 +63,6 @@ protected:
 	virtual void do_transform_pass(TransformAction);
 	virtual size_t children_count();
 private:
-    enum EditState {
-        NONE,
-        GRAB,
-        ROTATE,
-        SCALE,
-        THICKEN,
-        GRAB_CORRECTION,
-        GRAB_ALONG
-    };
     
     enum SelectState {
         ZERO,
@@ -74,12 +73,13 @@ private:
     bool constrain_x;
     bool constrain_y;
     
-    EditState state;
+	int action;
     SelectState select_state;
     
     void all_select();
     void select(Vec);
     void shift_select(Vec);
+
     void confirm();
     void cancel();
     
@@ -89,7 +89,7 @@ private:
     void extrude();
     void dir_match();
     
-    void init_action();
+    void init_action(int,Vec);
     
     Vec action_center;
     Vec action_pivot;

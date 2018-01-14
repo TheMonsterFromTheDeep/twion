@@ -1,5 +1,6 @@
+#include "stdafx.h"
 #include "transform.h"
-#include <cmath.h>
+#include <cmath>
 
 Transform::Transform(float A_, float B_, float C_,
                      float D_, float E_, float F_) :
@@ -20,10 +21,36 @@ Transform::Transform(const Transform& old) : Transform(old.A, old.B, old.C,
                                                        old.D, old.E, old.F) { }
 
 Transform Transform::rotation(float degrees) {
-	float c = cos(degrees):
-	float s = sin(degrees);
+	degrees *= DEG_TO_RAD;
+
+	float c = ::cos(degrees);
+	float s = ::sin(degrees);
 	return Transform(c, -s,
 	                 s,  c);
+}
+
+Transform Transform::rotation(float degrees, float pivot_x, float pivot_y) {
+	return translation(pivot_x, pivot_y) * rotation(degrees) * translation(-pivot_x, -pivot_y);
+}
+
+Transform Transform::rotation(float degrees, Vec pivot) {
+	return rotation(degrees, pivot.x, pivot.y);
+}
+
+Transform Transform::rotation(Vec direction) {
+	float c = direction.x / direction.len();
+	float s = direction.y / direction.len();
+
+	return Transform(c, -s,
+		             s, c);
+}
+
+Transform Transform::rotation(Vec direction, float pivot_x, float pivot_y) {
+	return translation(pivot_x, pivot_y) * rotation(direction) * translation(-pivot_x, -pivot_y);
+}
+
+Transform Transform::rotation(Vec direction, Vec pivot) {
+	return rotation(direction, pivot.x, pivot.y);
 }
 
 Transform Transform::translation(float x, float y) {
@@ -78,6 +105,6 @@ Transform Transform::inverse() {
 	/* Note that the third argument has the multiplications reversed
 	 * from Wolfram Alpha so that we can divide by denom rather than
 	 * -denom */
-	return Transform(E /  denom, B / -denom, (B * F - C * E) / denom,
+	return Transform(E /  denom, B / -denom, (B *  F - C * E) / denom,
 	                 D / -denom, A /  denom, (C * D - A * F) / denom);
 }

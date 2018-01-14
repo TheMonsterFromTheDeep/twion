@@ -35,6 +35,11 @@ public:
 	          float,float,float);
 	
 	static Transform rotation(float);
+	static Transform rotation(float, float, float);
+	static Transform rotation(float, Vec);
+	static Transform rotation(Vec);
+	static Transform rotation(Vec, float, float);
+	static Transform rotation(Vec, Vec);
 	static Transform translation(float,float);
 	static Transform translation(Vec);
 	static Transform scale(float);
