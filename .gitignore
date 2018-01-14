@@ -6,3 +6,10 @@ ignore
 
 # built executable
 twion.exe
+
+# visual studio files
+.vs/
+Debug/
+twion.sln
+twion.vcxproj
+twion.vcxproj.filters
