@@ -23,6 +23,9 @@ public:
 	Vec start_handle;
 	Vec end_handle;
 	
+	Vec start_ease();
+	Vec end_ease();
+	
 	void draw_handles(Graphics);
 };
 
@@ -33,9 +36,7 @@ public:
 	ShapePoint(const CurvePoint&);
 	
 	void draw(Graphics);
-    
-private:
-    std::vector<ShapeLine*> lines;
+	std::vector<ShapeLine*> lines;
 };
 
 class Shape {
@@ -49,6 +50,7 @@ public:
 	
 	ShapePoint* add_point(const CurvePoint&);
 	ShapeLine* add_line(const CurvePoint&, const CurvePoint&, Vec ae=Vec(), Vec be=Vec());
+	void connect(ShapePoint*,ShapePoint*);
     
     ShapeEditor *get_editor();
 private:
