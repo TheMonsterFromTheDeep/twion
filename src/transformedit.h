@@ -2,6 +2,8 @@
 #define TRANSFORM_EDIT_H
 
 #include "editor.h"
+#include "transform.h"
+#include <functional>
 
 class Selectable {
 public:
@@ -9,6 +11,7 @@ public:
 
 	void select();
 	void deselect();
+	void set_selected(bool);
 	bool is_selected();
 	virtual bool should_select(Vec);
 protected:
@@ -16,7 +19,7 @@ protected:
 	virtual void on_deselected();
 private:
 	bool selected;
-}
+};
 
 class Transformable : public Selectable {
 public:
@@ -30,7 +33,10 @@ protected:
 	virtual void on_transform_applied();
 private:
 	Transform transform;
-}
+};
+
+typedef std::function<bool(Transformable&)> TransformAction;
+typedef std::function<bool(Selectable&)> SelectableAction;
 
 class TransformEditor : public Editor {
 public:
@@ -45,8 +51,9 @@ public:
     
     RGB edit_color;
 protected:
-	void handle(const Transformable&);
-	virtual void do_transform_pass();
+	virtual void do_select_pass(SelectableAction);
+	virtual void do_transform_pass(TransformAction);
+	virtual size_t children_count();
 private:
     enum EditState {
         NONE,
