@@ -142,7 +142,7 @@ void TransformEditor::mouse_move(Vec position, Vec delta) {
 			Transform translation = Transform::translation(translation_vec);
             
 			do_transform_pass([&](Transformable& t) {
-				t.set_transform(translation);
+				if(t.is_selected()) t.set_transform(translation);
 				return false;
 			});
         }
@@ -154,7 +154,7 @@ void TransformEditor::mouse_move(Vec position, Vec delta) {
 			Transform rotation = Transform::rotation(direction, action_pivot);
 
 			do_transform_pass([&](Transformable& t) {
-				t.set_transform(rotation);
+				if(t.is_selected()) t.set_transform(rotation);
 				return false;
 			});
         }
@@ -173,7 +173,7 @@ void TransformEditor::mouse_move(Vec position, Vec delta) {
 			Transform scale = Transform::scale(scale_vec);
 
 			do_transform_pass([&](Transformable& t) {
-				t.set_transform(scale);
+				if(t.is_selected()) t.set_transform(scale);
 				return false;
 			});
         }
@@ -195,7 +195,7 @@ void TransformEditor::init_action(int act, Vec center) {
 
 void TransformEditor::cancel() {
 	do_transform_pass([](Transformable& t) {
-		t.cancel();
+		if(t.is_selected()) t.cancel();
 		return false;
 	});
 
@@ -204,7 +204,7 @@ void TransformEditor::cancel() {
 
 void TransformEditor::confirm() {
 	do_transform_pass([](Transformable& t) {
-		t.apply();
+		if(t.is_selected()) t.apply();
 		return false;
 	});
 
