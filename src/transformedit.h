@@ -11,6 +11,10 @@
 #define ACTION_ROTATE 2
 #define ACTION_SCALE  3
 
+#define SELECT_NONE 0
+#define SELECT_ONE  1
+#define SELECT_SOME 2
+
 class Selectable {
 public:
 	Selectable();
@@ -48,33 +52,20 @@ typedef std::function<bool(Selectable&)> SelectableAction;
 
 class TransformEditor : public Editor {
 public:
-    TransformEditor();
-    
-    virtual void draw(Graphics);
-    virtual void key(KeyEvent,Vec);
     virtual void mouse_move(Vec,Vec);
-    virtual void mouse(MouseEvent,Vec);
-    
-    virtual void init_left_menu(Control&);
     
     RGB edit_color;
 protected:
 	virtual void do_select_pass(SelectableAction);
 	virtual void do_transform_pass(TransformAction);
 	virtual size_t children_count();
-private:
-    
-    enum SelectState {
-        ZERO,
-        ONE,
-        SOME
-    };
-    
+	virtual Vec get_pivot();
+protected:   
     bool constrain_x;
     bool constrain_y;
     
 	int action;
-    SelectState select_state;
+    int selection;
     
     void all_select();
     void select(Vec);
@@ -82,12 +73,6 @@ private:
 
     void confirm();
     void cancel();
-    
-    void generate();
-    
-    void split();
-    void extrude();
-    void dir_match();
     
     void init_action(int,Vec);
     

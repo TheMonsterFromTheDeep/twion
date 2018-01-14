@@ -46,18 +46,24 @@ void Transformable::on_transform_changed() { }
 void Transformable::on_transform_applied() { }
 void Transformable::on_transform_canceled() { }
 
+/* Default handling */
+void TransformEditor::do_select_pass(SelectableAction f) { }
+void TransformEditor::do_transform_pass(TransformAction f) { }
+size_t TransformEditor::children_count() { return 0; }
+Vec TransformEditor::get_pivot() { return Vec(); }
+
 void TransformEditor::all_select() {
 	/* Select points if none are selected, deselect all selected
 	* points if one or more is selected */
-	bool new_value = (select_state == ZERO);
+	bool new_value = (selection == SELECT_NONE);
 
 	if(new_value) {
 		/* Handle all possible "select all" scenarios */
-		if(children_count() == 1) select_state = ONE;
-		else if(children_count() > 1) select_state = SOME;
-		else select_state = ZERO;
+		if(children_count() == 1) selection = SELECT_ONE;
+		else if(children_count() > 1) selection = SELECT_SOME;
+		else selection = SELECT_NONE;
 	}
-	else { select_state = ZERO; }
+	else { selection = SELECT_NONE; }
 
 	/* Pass the new value to all children */
 	do_select_pass([=](Selectable& s) {
@@ -70,7 +76,7 @@ void TransformEditor::select(Vec pos) {
 	bool has_new = false;
 	Selectable *new_selection;
 
-	SelectState new_state = ZERO;
+	int new_selection = SELECT_NONE;
 
 	do_select_pass([&](Selectable& s) {
 		/* Determine if there are any objects to be selected */
@@ -95,8 +101,8 @@ void TransformEditor::select(Vec pos) {
 			* is true if is the same as the one we stored earlier, and is false if it isn't
 			* or if it was already selected.
 			*/
-			s.set_selected((&s == new_selection) && (!s.is_selected() || select_state == SOME));
-			if (s.is_selected()) new_state = ONE;
+			s.set_selected((&s == new_selection) && (!s.is_selected() || selection == SELECT_SOME));
+			if (s.is_selected()) new_selection = SELECT_ONE;
 			return false;
 		});
 	}
@@ -117,11 +123,11 @@ void TransformEditor::shift_select(Vec pos) {
     
 	/* Update select state based on number of selected objects */
     if(select_count > 1)
-		select_state = SOME;
+		selection = SELECT_SOME;
     else if(select_count == 1)
-		select_state = ONE;
+		selection = SELECT_ONE;
     else
-		select_state = ZERO;
+		selection = SELECT_NONE;
 }
 
 void TransformEditor::mouse_move(Vec position, Vec delta) {
@@ -180,6 +186,9 @@ void TransformEditor::mouse_move(Vec position, Vec delta) {
 void TransformEditor::init_action(int act, Vec center) {
 	action = act;
 	action_center = center;
+
+	/* Request pivot */
+	action_pivot = get_pivot();
 
 	constrain_x = constrain_y = false;
 }
