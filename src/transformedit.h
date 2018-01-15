@@ -6,7 +6,10 @@
 #include "transform.h"
 #include <functional>
 
-/* Actions implemented by general TransformEditor */
+/* Actions implemented by general TransformEditor 
+ * Honestly this should probably be an enum again
+ * (along with SELECT_...)
+ */
 #define ACTION_NONE   0
 #define ACTION_GRAB   1
 #define ACTION_ROTATE 2
