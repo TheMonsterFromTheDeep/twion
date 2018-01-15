@@ -52,7 +52,7 @@ TransformEditor::TransformEditor() : constrain_x(false), constrain_y(false), act
 /* Default handling */
 void TransformEditor::do_select_pass(SelectableAction f) { }
 void TransformEditor::do_transform_pass(TransformAction f) { }
-size_t TransformEditor::children_count() { return 0; }
+std::size_t TransformEditor::children_count() { return 0; }
 Vec TransformEditor::get_pivot() { return Vec(); }
 
 void TransformEditor::all_select() {
@@ -176,7 +176,7 @@ void TransformEditor::mouse_move(Vec position, Vec delta) {
             if(constrain_x) scale_vec.y = 1;
             if(constrain_y) scale_vec.x = 1;
 
-			Transform scale = Transform::scale(scale_vec);
+			Transform scale = Transform::scale(scale_vec, action_pivot);
 
 			do_transform_pass([&](Transformable& t) {
 				if(t.is_selected()) t.set_transform(scale);

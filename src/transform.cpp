@@ -78,6 +78,30 @@ Transform Transform::scale(Vec v) {
 	                 0, v.y);
 }
 
+Transform Transform::scale(float uniform, float pivot_x, float pivot_y) {
+	return translation(pivot_x, pivot_y) * scale(uniform) * translation(-pivot_x, -pivot_y);
+}
+
+Transform Transform::scale(float uniform, Vec pivot) {
+	return scale(uniform, pivot.x, pivot.y);
+}
+
+Transform Transform::scale(float x, float y, float pivot_x, float pivot_y) {
+	return translation(pivot_x, pivot_y) * scale(x, y) * translation(-pivot_x, -pivot_y);
+}
+
+Transform Transform::scale(float x, float y, Vec pivot) {
+	return scale(x, y, pivot.x, pivot.y);
+}
+
+Transform Transform::scale(Vec s, float pivot_x, float pivot_y) {
+	return scale(s.x, s.y, pivot_x, pivot_y);
+}
+
+Transform Transform::scale(Vec s, Vec pivot) {
+	return scale(s.x, s.y, pivot.x, pivot.y);
+}
+
 Transform Transform::operator*(const Transform& t) const {
 	return Transform(A * t.A + B * t.D,   A * t.B + B * t.E,   A * t.C + B * t.F + C,
 	                 D * t.A + E * t.D,   D * t.B + E * t.E,   D * t.C + E * t.F + F);
