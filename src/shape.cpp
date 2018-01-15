@@ -48,6 +48,11 @@ namespace shape {
 		ease_out = new Handle(Vec());
 	}
 
+	Line::~Line() {
+		delete ease_in;
+		delete ease_out;
+	}
+
 	Line::Line(Point *start_, Point *end_) : start(start_), end(end_) {
 		if (!start || !end) {
 			/* TODO: Use non-nullable type */
@@ -89,6 +94,19 @@ namespace shape {
 		Vec ei = ease_in->position();
 		Vec eo = ease_out->position();
 
+		if (ease_in->is_selected()) g.rgb(1.f, 0.8f, 0.1f);
+		else              g.rgb(0.0f, 0.0f, 0.0f);
+		g.line(start->position(), ease_in->position());
+		g.draw_circle(ease_in->position(), g.normalize(5));
+
+		if (ease_out->is_selected()) g.rgb(1.f, 0.8f, 0.1f);
+		else              g.rgb(0.0f, 0.0f, 0.0f);
+		g.line(end->position(), ease_out->position());
+		g.draw_circle(ease_out->position(), g.normalize(5));
+
+		if (start->is_selected() && end->is_selected()) g.rgb(1.f, 0.8f, 0.1f);
+		else              g.rgb(0.0f, 0.0f, 0.0f);
+
 		InterpolatedCubic ic(&s, &e, &ei, &eo);
 		ic.calculate();
 		Curve c = ic.generate(0.01f);
@@ -115,31 +133,87 @@ namespace shape {
 		return sqr;
 	}
 
-	void Shape::add_point(Vec v) {
+	Point* Shape::add_point(Vec v) {
 		Point *p = new Point(v);
+		p->parent = this;
 		points.push_back(p);
+
+		return p;
 	}
 
-	void Shape::connect(std::size_t a, std::size_t b) {
-		/* TODO: Don't connect if they're already connected */
-		Line *l = new Line(points[a], points[b]);
+	void Shape::connect(std::size_t a_index, std::size_t b_index) {
+		Point *a = points[a_index];
+		Point *b = points[b_index];
+
+		/* Should only need to check one of the two for duplication */
+		auto b_in_a = std::find(a->connections.begin(), a->connections.end(), b);
+		if (b_in_a != a->connections.end()) {
+			return;
+		}
+
+		a->connections.push_back(b);
+		b->connections.push_back(a);
+
+		Line *l = new Line(a, b);
 		lines.push_back(l);
 	}
 
 	void Shape::connect(Point *a, Point *b) {
-		auto a_it = std::find(points.begin(), points.end(), a);
-		auto b_it = std::find(points.begin(), points.end(), b);
-		if (a_it == points.end() || b_it == points.end()) {
+		if (a->parent != this || b->parent != this) {
 			throw std::domain_error("Points to connect must exist in this shape!");
 		}
-		/* TODO: Don't connect if they're already connected
-		 * - Each point should probably store a list of Lines that it is in
-		 * - Each point should probably store a reference to the shape, so
-		 *   checking parent is O(1)
-		 */
+
+		/* Should only need to check one of the two for duplication */
+		auto b_in_a = std::find(a->connections.begin(), a->connections.end(), b);
+		if (b_in_a != a->connections.end()) {
+			return;
+		}
+
+		a->connections.push_back(b);
+		b->connections.push_back(a);
 
 		Line *l = new Line(a, b);
 		lines.push_back(l);
+	}
+
+	/* TODO: Make this much less inefficient
+	 * Basically needs a much better node system, but I'm not
+	 * quite sure what...
+	 */
+	void Shape::disconnect(Point *a, Point *b) {
+		if (a->parent != this || b->parent != this) {
+			throw std::domain_error("Points to disconnect must exist in this shape!");
+		}
+
+		/* Should only need to check one of the two for non-connection */
+		auto b_in_a = std::find(a->connections.begin(), a->connections.end(), b);
+		if (b_in_a == a->connections.end()) {
+			return;
+		}
+
+		auto a_in_b = std::find(b->connections.begin(), b->connections.end(), a);
+		
+		/* Erase both connections */
+		a->connections.erase(b_in_a);
+		b->connections.erase(a_in_b);
+
+		Line *to_disconnect = nullptr;
+
+		auto it = lines.begin();
+
+		for (Line *l : lines) {
+			if ((l->start == a && l->end == b) || (l->start == b && l->end == a)) {
+				to_disconnect = l;
+				break;
+			}
+			++it;
+		}
+
+		if (!to_disconnect) { return; }
+
+		lines.erase(it);
+
+		delete to_disconnect;
 	}
 
 	ShapeEditor *Shape::get_editor() {

@@ -58,6 +58,8 @@ private:
 };*/
 
 namespace shape {
+	class Shape;
+
 	class Point : public Transformable {
 	public:
 		Point(Vec);
@@ -73,6 +75,12 @@ namespace shape {
 	private:
 		Vec stored;
 		Vec active;
+
+		std::vector<Point*> connections;
+		friend class Shape;
+		friend class ShapeEditor;
+
+		Shape* parent;
 	};
 
 	class Handle : public Point { public: Handle(Vec); };
@@ -80,6 +88,7 @@ namespace shape {
 	class Line {
 	public:
 		Line();
+		~Line();
 		Line(Point*, Point*);
 
 		Point *start;
@@ -105,9 +114,10 @@ namespace shape {
 
 		static Shape *square(float);
 
-		void add_point(Vec);
+		Point* add_point(Vec);
 		void connect(std::size_t, std::size_t);
 		void connect(Point*, Point*);
+		void disconnect(Point*, Point*);
 	protected:
 	private:
 		std::vector<Point*> points;
@@ -136,6 +146,7 @@ namespace shape {
 		virtual std::size_t children_count();
 		virtual Vec get_pivot();
 	private:
+		void extrude();
 	};
 }
 

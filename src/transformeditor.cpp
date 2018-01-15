@@ -219,7 +219,7 @@ void TransformEditor::cancel() {
 
 void TransformEditor::confirm() {
 	do_transform_pass([](Transformable& t) {
-		if(t.is_selected()) t.apply();
+		t.apply();
 		return false;
 	});
 

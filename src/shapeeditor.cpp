@@ -142,6 +142,10 @@ namespace shape {
 				init_action((e.shift_down ? ACTION_GRAB_CORRECTION : ACTION_GRAB), mouse);
 			}
 
+			if (e.key == 'E') {
+				extrude();
+			}
+
 			if(e.key == 'R') {
 				//if(e.control_down) {
 				//	split();
@@ -180,9 +184,7 @@ namespace shape {
 				}
 			}
 
-			if(e.key == 'E') {
-				extrude();
-			}
+			
 
 			if(e.key == ' ') {
 				dir_match();
@@ -353,6 +355,50 @@ namespace shape {
 			}
 		}*/
 	//}
+
+	void ShapeEditor::extrude() {
+		int select_count = 0;
+
+		for (Point *p : source->points) {
+			if (p->is_selected()) {
+				int connection_count = 0;
+				for (Point *c : p->connections) {
+					if (c->is_selected()) {
+						++connection_count;
+					}
+				}
+
+				if (connection_count < 2) {
+					Point *dup = source->add_point(p->position());
+
+					std::vector<Point*> to_disconnect;
+
+					/* Move all connections from the original point
+					 * to the new point
+					 */
+					for (Point *c : p->connections) {
+						if (!c->is_selected()) {
+							source->connect(dup, c);
+							to_disconnect.push_back(c);
+						}
+					}
+
+					for (Point *c : to_disconnect) {
+						source->disconnect(p, c);
+					}
+
+					source->connect(p, dup);
+				}
+			}
+		}
+
+		//if (select_count > 1) selection = SELECT_SOME;
+		//else if (select_count == 1) selection = SELECT_ONE;
+		//else selection = SELECT_NONE;
+
+		//if(select_count > 0)
+			init_action(ACTION_GRAB_CORRECTION, mouse_last);
+	}
 
 	//void ShapeEditor::split() {
 		/*std::vector<size_t> split_points;
