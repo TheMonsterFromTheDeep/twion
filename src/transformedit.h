@@ -12,6 +12,8 @@
 #define ACTION_ROTATE 2
 #define ACTION_SCALE  3
 
+#define ACTION_GRAB_CORRECTION 4
+
 #define SELECT_NONE 0
 #define SELECT_ONE  1
 #define SELECT_SOME 2
@@ -78,6 +80,10 @@ protected:
     void cancel();
     
     void init_action(int,Vec);
+
+	void do_grab_update(Vec);
+	void do_rotation_update(Vec);
+	void do_scale_update(Vec);
     
     Vec action_center;
     Vec action_pivot;

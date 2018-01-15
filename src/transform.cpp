@@ -107,6 +107,15 @@ Transform Transform::operator*(const Transform& t) const {
 	                 D * t.A + E * t.D,   D * t.B + E * t.E,   D * t.C + E * t.F + F);
 }
 
+Transform Transform::project(float x, float y) {
+	return Transform(0, 0, x,
+		             0, 0, y);
+}
+
+Transform Transform::project(Vec pos) {
+	return project(pos.x, pos.y);
+}
+
 Vec Transform::operator*(Vec v) const {
 	return Vec(
 		A * v.x + B * v.y + C,

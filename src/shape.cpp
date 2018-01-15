@@ -62,6 +62,15 @@ namespace shape {
 		ease_out = new Handle(eo);
 	}
 
+	void Line::straighten() {
+		Vec delta = (end->position() - start->position()) / 4;
+		Vec ei = start->position() + delta;
+		Vec eo = end->position() - delta;
+
+		ease_in->set_transform(Transform::project(ei));
+		ease_out->set_transform(Transform::project(eo));
+	}
+
 	void Point::draw(Graphics g) {
 		float width_0 = g.normalize(6);
 		float width_1 = g.normalize(3);

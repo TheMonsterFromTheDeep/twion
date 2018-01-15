@@ -70,7 +70,7 @@ namespace shape {
 		float radius = g.normalize(4);
 
 		if (selected) g.rgb(1.f, 0.8f, 0.1f);
-		else         g.rgb(0.f, 0.f, 0.f);
+		else          g.rgb(0.f, 0.f, 0.f);
 
 		g.draw_circle(v, radius);
 	}
@@ -139,8 +139,7 @@ namespace shape {
 
 		if(selection != SELECT_NONE && action == ACTION_NONE) {
 			if(e.key == 'G') {
-				//state = (e.shift_down ? GRAB_CORRECTION : GRAB);
-				init_action(ACTION_GRAB, mouse);
+				init_action((e.shift_down ? ACTION_GRAB_CORRECTION : ACTION_GRAB), mouse);
 			}
 
 			if(e.key == 'R') {
@@ -207,6 +206,17 @@ namespace shape {
 
 	void ShapeEditor::mouse_move(Vec position, Vec delta) {
 		TransformEditor::mouse_move(position, delta);
+
+		switch (action) {
+		case ACTION_GRAB_CORRECTION:
+			do_grab_update(position);
+			for (Line *l : source->lines) {
+				if (l->start->is_selected() != l->end->is_selected()) {
+					l->straighten();
+				}
+			}
+		}
+
 		/*mouse_last = position;
 
 		switch(state) {

@@ -87,6 +87,8 @@ namespace shape {
 		Handle *ease_in;
 		Handle *ease_out;
 
+		void straighten();
+
 		void draw(Graphics);
 	protected:
 	private:

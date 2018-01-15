@@ -51,6 +51,8 @@ public:
 	static Transform scale(float, float, Vec);
 	static Transform scale(Vec, float, float);
 	static Transform scale(Vec, Vec);
+	static Transform project(float, float);
+	static Transform project(Vec);
 	
 	Transform operator*(const Transform&) const;
 	Vec operator*(Vec) const;

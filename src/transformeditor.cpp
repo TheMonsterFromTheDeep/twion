@@ -136,54 +136,63 @@ void TransformEditor::shift_select(Vec pos) {
 		selection = SELECT_NONE;
 }
 
+void TransformEditor::do_grab_update(Vec position) {
+	Vec translation_vec = position - action_center;
+	if (constrain_x) { translation_vec.y = 0; }
+	if (constrain_y) { translation_vec.x = 0; }
+
+	Transform translation = Transform::translation(translation_vec);
+
+	do_transform_pass([&](Transformable& t) {
+		if (t.is_selected()) t.set_transform(translation);
+		return false;
+	});
+}
+
+void TransformEditor::do_rotation_update(Vec position) {
+	Vec direction = position.rotate_inverse(action_center - action_pivot, action_pivot) - action_pivot;
+
+	Transform rotation = Transform::rotation(direction, action_pivot);
+
+	do_transform_pass([&](Transformable& t) {
+		if (t.is_selected()) t.set_transform(rotation);
+		return false;
+	});
+}
+
+void TransformEditor::do_scale_update(Vec position) {
+	/* This is less efficient than it could be (two square roots, action_center - action_pivot could be cached)
+	* but it doesn't really matter right now.
+	*/
+	float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
+
+	Vec scale_vec(magnitude);
+	if (constrain_x) scale_vec.y = 1;
+	if (constrain_y) scale_vec.x = 1;
+
+	Transform scale = Transform::scale(scale_vec, action_pivot);
+
+	do_transform_pass([&](Transformable& t) {
+		if (t.is_selected()) t.set_transform(scale);
+		return false;
+	});
+}
+
 void TransformEditor::mouse_move(Vec position, Vec delta) {
 	mouse_last = position;
 
     switch(action) {
-        case ACTION_GRAB: {
-            Vec translation_vec = position - action_center;
-            if(constrain_x) { translation_vec.y = 0; }
-            if(constrain_y) { translation_vec.x = 0; }
-
-			Transform translation = Transform::translation(translation_vec);
-            
-			do_transform_pass([&](Transformable& t) {
-				if(t.is_selected()) t.set_transform(translation);
-				return false;
-			});
-        }
-        break;
+        case ACTION_GRAB:
+			do_grab_update(position);
+			break;
         
-        case ACTION_ROTATE: {
-            Vec direction = position.rotate_inverse(action_center - action_pivot, action_pivot) - action_pivot;
-            
-			Transform rotation = Transform::rotation(direction, action_pivot);
+		case ACTION_ROTATE:
+			do_rotation_update(position);
+			break;
 
-			do_transform_pass([&](Transformable& t) {
-				if(t.is_selected()) t.set_transform(rotation);
-				return false;
-			});
-        }
-        break;
-        
-        case ACTION_SCALE: {
-            /* This is less efficient than it could be (two square roots, action_center - action_pivot could be cached)
-             * but it doesn't really matter right now.
-             */
-            float magnitude = (position - action_pivot).len() / (action_center - action_pivot).len();
-            
-            Vec scale_vec(magnitude);
-            if(constrain_x) scale_vec.y = 1;
-            if(constrain_y) scale_vec.x = 1;
-
-			Transform scale = Transform::scale(scale_vec, action_pivot);
-
-			do_transform_pass([&](Transformable& t) {
-				if(t.is_selected()) t.set_transform(scale);
-				return false;
-			});
-        }
-        break;
+        case ACTION_SCALE:
+			do_scale_update(position);
+			break;
         
         default: { }
     }
@@ -201,7 +210,7 @@ void TransformEditor::init_action(int act, Vec center) {
 
 void TransformEditor::cancel() {
 	do_transform_pass([](Transformable& t) {
-		if(t.is_selected()) t.cancel();
+		t.cancel();
 		return false;
 	});
 
