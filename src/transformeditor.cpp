@@ -1,4 +1,5 @@
 #include "transformedit.h"
+#include <iostream>
 
 Selectable::Selectable() : selected(false) { }
 
@@ -107,11 +108,14 @@ void TransformEditor::select(Vec pos) {
 			if (s.is_selected()) new_select = SELECT_ONE;
 			return false;
 		});
+
+		/* Update selection state */
+		selection = new_select;
 	}
 }
 
 void TransformEditor::shift_select(Vec pos) {
-    size_t select_count = 0;
+   std::size_t select_count = 0;
 
 	do_select_pass([&,pos](Selectable& s) {
 		/* If an object is qualifiable for selection, flip its state */
