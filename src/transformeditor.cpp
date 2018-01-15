@@ -9,7 +9,7 @@ void Selectable::select() {
 
 void Selectable::deselect() {
 	selected = false;
-	on_deselected;
+	on_deselected();
 }
 
 void Selectable::set_selected(bool what) {
@@ -46,6 +46,8 @@ void Transformable::on_transform_changed() { }
 void Transformable::on_transform_applied() { }
 void Transformable::on_transform_canceled() { }
 
+TransformEditor::TransformEditor() : constrain_x(false), constrain_y(false), action(ACTION_NONE), selection(SELECT_NONE) { }
+
 /* Default handling */
 void TransformEditor::do_select_pass(SelectableAction f) { }
 void TransformEditor::do_transform_pass(TransformAction f) { }
@@ -76,7 +78,7 @@ void TransformEditor::select(Vec pos) {
 	bool has_new = false;
 	Selectable *new_selection;
 
-	int new_selection = SELECT_NONE;
+	int new_select = SELECT_NONE;
 
 	do_select_pass([&](Selectable& s) {
 		/* Determine if there are any objects to be selected */
@@ -102,7 +104,7 @@ void TransformEditor::select(Vec pos) {
 			* or if it was already selected.
 			*/
 			s.set_selected((&s == new_selection) && (!s.is_selected() || selection == SELECT_SOME));
-			if (s.is_selected()) new_selection = SELECT_ONE;
+			if (s.is_selected()) new_select = SELECT_ONE;
 			return false;
 		});
 	}

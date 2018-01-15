@@ -1,154 +1,197 @@
 #include "shape.h"
 #include <iostream>
+#include <algorithm>
 
 #include <GLFW/glfw3.h>
 
-ShapePoint::ShapePoint(const CurvePoint& data_) : data(data_), lines() { }
+/* TODO: Properly put together global data situation
+ * also handle memory leak
+ */
+std::vector<shape::Shape*> global_shapes;
 
-void ShapeLine::draw_handles(Graphics g) {
-	float radius = g.normalize(4);
-	
-    g.draw_circle(start_handle, radius);
-	g.draw_circle(end_handle, radius);
-	
-	g.line(start_handle, start->data.location);
-	g.line(end_handle, end->data.location);
-}
+namespace shape {
 
-Vec ShapeLine::start_ease() {
-	return start_handle - start->data.location;
-}
-
-Vec ShapeLine::end_ease() {
-	return end_handle - end->data.location;
-}
-
-static void diamond(Graphics g, Vec pos, float radius) {
-    g.begin_quad();
-    g.point(pos + Vec(radius, 0));
-    g.point(pos + Vec(0, radius));
-    g.point(pos - Vec(radius, 0));
-    g.point(pos - Vec(0, radius));
-    g.end();
-}
-
-void ShapePoint::draw(Graphics g) {
-	float width_0 = g.normalize(6);
-    float width_1 = g.normalize(3);
-    
-	g.rgb(1.f, 0.8f, 0.1f);
-    //if(selected) g.rgb(1.f, 0.8f, 0.1f);
-    //else         g.rgb(0.0f, 0.0f, 0.0f);
-    diamond(g, data.location, width_0);
-    
-    g.rgb(data.color);
-    diamond(g, data.location, width_1);
-}
-
-void Shape::connect(ShapePoint* a, ShapePoint* b) {
-	Vec ease_in = (a->data.location - b->data.location) / 4;
-	Vec ease_out = ease_in * -1;
-	if(a->lines.size() == 1) {
-		ease_in = a->lines[0]->start_ease() * -1;
+	static void diamond(Graphics g, Vec pos, float radius) {
+		g.begin_quad();
+		g.point(pos + Vec(radius, 0));
+		g.point(pos + Vec(0, radius));
+		g.point(pos - Vec(radius, 0));
+		g.point(pos - Vec(0, radius));
+		g.end();
 	}
-	if(b->lines.size() == 1) {
-		ease_out = b->lines[0]->end_ease() * -1;
+
+	Point::Point(Vec v) : stored(v), active(v) { }
+
+	Vec Point::position() { return active; }
+
+	bool Point::should_select(Vec pos) {
+		return (pos - stored).lensqr() < 5 * 5;
 	}
-	ShapeLine *sl = new ShapeLine();
-	sl->start = a;
-	sl->end = b;
-	sl->start_handle = a->data.location + ease_in;
-	sl->end_handle = b->data.location + ease_out;
-	sl->start->lines.push_back(sl);
-	sl->end->lines.push_back(sl);
-	lines.push_back(sl);
-}
 
-Shape::Shape() : points(), lines() {
-	add_line(
-		CurvePoint(Vec(0, 0), 1.f, RGB(1.f, 1.f, 1.f)),
-		CurvePoint(Vec(30, 30), 1.f, RGB(1.f, 1.f, 1.f)),
-		Vec(3, 3),
-		Vec(30, 15)
-	);
-	connect(points[0], points[1]);
-}
+	void Point::on_transform_changed() {
+		active = get_transform() * stored;
+	}
 
-ShapePoint* Shape::add_point(const CurvePoint &p) {
-	points.push_back(new ShapePoint(p));
-	return points.back();
-}
+	void Point::on_transform_applied() {
+		stored = get_transform() * stored;
+		active = stored;
+	}
 
-ShapeLine* Shape::add_line(const CurvePoint &a, const CurvePoint& b, Vec ae, Vec be) {
-	ShapeLine *sl = new ShapeLine();
-	sl->start = add_point(a);
-	sl->end = add_point(b);
-	sl->start_handle = ae;
-	sl->end_handle = be;
-	sl->start->lines.push_back(sl);
-	sl->end->lines.push_back(sl);
-	lines.push_back(sl);
-	return lines.back();
-}
+	void Point::on_transform_canceled() {
+		active = stored;
+	}
 
-ShapeEditor *Shape::get_editor() {
-    return new ShapeEditor(this);
-}
+	Handle::Handle(Vec v) : Point(v) { }
 
-void fill_unloop(Curve& points, Graphics g) {
-    g.begin_quad_strip();
-    
-    size_t last = points.size() - 1;
-    size_t i = 0;
-    while(i < last - i) {
-        g.rgb(points[i].fill);
-        g.point(points[i].location);
-        g.rgb(points[last - i].fill);
-        g.point(points[last - i].location);
-        ++i;
-    }
-    
-    g.end();
-}
+	Line::Line() {
+		ease_in = new Handle(Vec());
+		ease_out = new Handle(Vec());
+	}
 
-void Shape::line(Graphics g) {
-    Curve calc;
-    
-    g.translate(position);
-    
-    for(ShapeLine *sl : lines) {
-		InterpolatedCubic ic(&sl->start->data, &sl->end->data, &sl->start_handle, &sl->end_handle);
-        ic.calculate();
-        Curve c = ic.generate(0.01f);
-        for(CurvePoint& p : c) {
-            calc.push_back(p);
-        }
-    }
-    
-    calc.line(g);
-    
-    g.translate(position * -1);
-}
+	Line::Line(Point *start_, Point *end_) : start(start_), end(end_) {
+		if (!start || !end) {
+			/* TODO: Use non-nullable type */
+			throw std::domain_error("Line cannot go between null points.");
+		}
 
-void Shape::draw(Graphics g) {
-    Curve calc;
-    
-    g.translate(position);
-    
-    for(ShapeLine *sl : lines) {
-		InterpolatedCubic ic(&sl->start->data, &sl->end->data, &sl->start_handle, &sl->end_handle);
-        ic.calculate();
-        Curve c = ic.generate(0.01f);
-        for(CurvePoint& p : c) {
-            calc.push_back(p);
-        }
-    }
-    
-    g.rgb(1.f, 1.f, 1.f);
-    
-    //fill_unloop(calc, g);
-    
-    calc.stroke(g);
-    
-    g.translate(position * -1);
+		Vec delta = (end->position() - start->position()) / 4;
+		Vec ei = start->position() + delta;
+		Vec eo = end->position() - delta;
+
+		ease_in = new Handle(ei);
+		ease_out = new Handle(eo);
+	}
+
+	void Point::draw(Graphics g) {
+		float width_0 = g.normalize(6);
+		float width_1 = g.normalize(3);
+
+		//g.rgb(1.f, 0.8f, 0.1f);
+		if(is_selected()) g.rgb(1.f, 0.8f, 0.1f);
+		else              g.rgb(0.0f, 0.0f, 0.0f);
+		diamond(g, position(), width_0);
+
+		diamond(g, position(), width_1);
+	}
+
+	void Line::draw(Graphics g) {
+		CurvePoint s(start->position(), 1);
+		CurvePoint e(end->position(), 1);
+		Vec ei = ease_in->position();
+		Vec eo = ease_out->position();
+
+		InterpolatedCubic ic(&s, &e, &ei, &eo);
+		ic.calculate();
+		Curve c = ic.generate(0.01f);
+		c.line(g);
+	}
+
+	Shape::Shape() : points(), lines() {
+		
+	}
+
+	Shape *Shape::square(float radius) {
+		Shape *sqr = new Shape();
+
+		sqr->add_point(Vec(-radius, -radius));
+		sqr->add_point(Vec(-radius,  radius));
+		sqr->add_point(Vec( radius,  radius));
+		sqr->add_point(Vec( radius, -radius));
+
+		sqr->connect(0, 1);
+		sqr->connect(1, 2);
+		sqr->connect(2, 3);
+		sqr->connect(3, 0);
+
+		return sqr;
+	}
+
+	void Shape::add_point(Vec v) {
+		Point *p = new Point(v);
+		points.push_back(p);
+	}
+
+	void Shape::connect(std::size_t a, std::size_t b) {
+		/* TODO: Don't connect if they're already connected */
+		Line *l = new Line(points[a], points[b]);
+		lines.push_back(l);
+	}
+
+	void Shape::connect(Point *a, Point *b) {
+		auto a_it = std::find(points.begin(), points.end(), a);
+		auto b_it = std::find(points.begin(), points.end(), b);
+		if (a_it == points.end() || b_it == points.end()) {
+			throw std::domain_error("Points to connect must exist in this shape!");
+		}
+		/* TODO: Don't connect if they're already connected
+		 * - Each point should probably store a list of Lines that it is in
+		 * - Each point should probably store a reference to the shape, so
+		 *   checking parent is O(1)
+		 */
+
+		Line *l = new Line(a, b);
+		lines.push_back(l);
+	}
+
+	ShapeEditor *Shape::get_editor() {
+		return new ShapeEditor(this);
+	}
+
+	/*void fill_unloop(Curve& points, Graphics g) {
+		g.begin_quad_strip();
+
+		size_t last = points.size() - 1;
+		size_t i = 0;
+		while (i < last - i) {
+			g.rgb(points[i].fill);
+			g.point(points[i].location);
+			g.rgb(points[last - i].fill);
+			g.point(points[last - i].location);
+			++i;
+		}
+
+		g.end();
+	}
+
+	/*void Shape::line(Graphics g) {
+		Curve calc;
+
+		g.translate(position);
+
+		for (ShapeLine *sl : lines) {
+			InterpolatedCubic ic(&sl->start->data, &sl->end->data, &sl->start_handle, &sl->end_handle);
+			ic.calculate();
+			Curve c = ic.generate(0.01f);
+			for (CurvePoint& p : c) {
+				calc.push_back(p);
+			}
+		}
+
+		calc.line(g);
+
+		g.translate(position * -1);
+	}
+
+	void Shape::draw(Graphics g) {
+		Curve calc;
+
+		g.translate(position);
+
+		for (ShapeLine *sl : lines) {
+			InterpolatedCubic ic(&sl->start->data, &sl->end->data, &sl->start_handle, &sl->end_handle);
+			ic.calculate();
+			Curve c = ic.generate(0.01f);
+			for (CurvePoint& p : c) {
+				calc.push_back(p);
+			}
+		}
+
+		g.rgb(1.f, 1.f, 1.f);
+
+		//fill_unloop(calc, g);
+
+		calc.stroke(g);
+
+		g.translate(position * -1);
+	}*/
 }

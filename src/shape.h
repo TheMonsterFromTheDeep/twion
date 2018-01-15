@@ -7,15 +7,12 @@
 #include "graphics.h"
 #include "event.h"
 #include "editortype.h"
+#include "transformedit.h"
 #include <vector>
-
-class ShapeEditor;
-
-class ShapePoint;
 
 /* TODO: Tighten this and InterpolatedCubic; they're almost the exact
  * same thing */
-class ShapeLine {
+/*class ShapeLine {
 public:
     ShapePoint *start;
 	ShapePoint *end;
@@ -58,80 +55,88 @@ private:
 	std::vector<ShapeLine*> lines;
     
     friend class ShapeEditor;
-};
+};*/
 
-class EditCurvePoint {
-public:
-    EditCurvePoint(CurvePoint*);
+namespace shape {
+	class Point : public Transformable {
+	public:
+		Point(Vec);
 
-    CurvePoint *source;
-    bool selected;
-};
+		virtual bool should_select(Vec);
+		Vec position();
 
-class EditVec {
-public:
-    EditVec(Vec*);
+		void draw(Graphics);
+	protected:
+		virtual void on_transform_changed();
+		virtual void on_transform_canceled();
+		virtual void on_transform_applied();
+	private:
+		Vec stored;
+		Vec active;
+	};
 
-    Vec *source;
-    bool selected;
-};
+	class Handle : public Point { public: Handle(Vec); };
 
-class ShapeEditor : public Editor {
-public:
-    ShapeEditor(Shape*);
+	class Line {
+	public:
+		Line();
+		Line(Point*, Point*);
 
-    Shape *source;
-    
-    virtual void draw(Graphics);
-    virtual void key(KeyEvent,Vec);
-    virtual void mouse_move(Vec,Vec);
-    virtual void mouse(MouseEvent,Vec);
-    
-    virtual void init_left_menu(Control&);
-    
-    RGB edit_color;
-private:
-    enum EditState {
-        NONE,
-        GRAB,
-        ROTATE,
-        SCALE,
-        THICKEN,
-        GRAB_CORRECTION,
-        GRAB_ALONG
-    };
-    
-    enum SelectState {
-        ZERO,
-        ONE,
-        SOME
-    };
-    
-    bool constrain_x;
-    bool constrain_y;
-    
-    EditState state;
-    SelectState select_state;
-    
-    void all_select();
-    void select(Vec);
-    void shift_select(Vec);
-    void confirm();
-    void cancel();
-    
-    void generate();
-    
-    void split();
-    void extrude();
-    void dir_match();
-    
-    void init_action();
-    
-    Vec action_center;
-    Vec action_pivot;
-    
-    /* TODO: Get this from parent, as we shouldn't need to store it. */
-    Vec mouse_last;
-};
+		Point *start;
+		Point *end;
+		Handle *ease_in;
+		Handle *ease_out;
+
+		void draw(Graphics);
+	protected:
+	private:
+		
+	};
+
+	class ShapeEditor;
+
+	class Shape {
+	public:
+		Shape();
+
+		ShapeEditor *get_editor();
+
+		static Shape *square(float);
+
+		void add_point(Vec);
+		void connect(std::size_t, std::size_t);
+		void connect(Point*, Point*);
+	protected:
+	private:
+		std::vector<Point*> points;
+		std::vector<Line*> lines;
+
+		friend class ShapeEditor;
+	};
+
+	class ShapeEditor : public TransformEditor {
+	public:
+		ShapeEditor(Shape*);
+
+		Shape *source;
+
+		virtual void draw(Graphics);
+		virtual void key(KeyEvent, Vec);
+		virtual void mouse_move(Vec, Vec);
+		virtual void mouse(MouseEvent, Vec);
+
+		virtual void init_left_menu(Control&);
+
+		RGB edit_color;
+	protected:
+		virtual void do_transform_pass(TransformAction);
+		virtual void do_select_pass(SelectableAction);
+		virtual std::size_t children_count();
+		virtual Vec get_pivot();
+	private:
+	};
+}
+
+extern std::vector<shape::Shape*> global_shapes;
 
 #endif

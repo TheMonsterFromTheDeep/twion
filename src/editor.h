@@ -1,6 +1,8 @@
+#ifndef EDITOR_H
+#define EDITOR_H
+
 #include "control.h"
 #include "cubic.h"
-#include "shape.h"
 #include "editortype.h"
 #include "view.h"
 #include <vector>
@@ -40,9 +42,6 @@ private:
     bool panning;
     
     Vec getCursor();
-    
-    std::vector<Shape> shapes;
-    
 };
 
 class EditorWindow : public Control {
@@ -56,3 +55,5 @@ private:
     View left_view;
     View right_view;
 };
+
+#endif

@@ -58,7 +58,7 @@ void EditorContainer::init_editor() {
 }
     
 ObjectEditor *EditorContainer::get_object_editor() {
-    return new ObjectEditor(&shapes);
+    return new ObjectEditor(&global_shapes);
 }
     
 void EditorContainer::set_editor(Editor *e) {

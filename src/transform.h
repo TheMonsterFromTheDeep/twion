@@ -46,10 +46,10 @@ public:
 	static Transform scale(float,float);
 	static Transform scale(Vec);
 	
-	Transform operator*(const Transform&);
-	Vec operator*(Vec);
+	Transform operator*(const Transform&) const;
+	Vec operator*(Vec) const;
 	
 	Transform inverse();
-}
+};
 
 #endif

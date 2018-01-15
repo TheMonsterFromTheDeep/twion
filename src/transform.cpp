@@ -78,12 +78,12 @@ Transform Transform::scale(Vec v) {
 	                 0, v.y);
 }
 
-Transform Transform::operator*(const Transform& t) {
+Transform Transform::operator*(const Transform& t) const {
 	return Transform(A * t.A + B * t.D,   A * t.B + B * t.E,   A * t.C + B * t.F + C,
 	                 D * t.A + E * t.D,   D * t.B + E * t.E,   D * t.C + E * t.F + F);
 }
 
-Vec Transform::operator*(Vec v) {
+Vec Transform::operator*(Vec v) const {
 	return Vec(
 		A * v.x + B * v.y + C,
 		D * v.x + E * v.y + F

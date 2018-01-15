@@ -1,6 +1,7 @@
 #ifndef TRANSFORM_EDIT_H
 #define TRANSFORM_EDIT_H
 
+#include <cstddef>
 #include "editor.h"
 #include "transform.h"
 #include <functional>
@@ -52,13 +53,15 @@ typedef std::function<bool(Selectable&)> SelectableAction;
 
 class TransformEditor : public Editor {
 public:
+	TransformEditor();
+
     virtual void mouse_move(Vec,Vec);
     
     RGB edit_color;
 protected:
 	virtual void do_select_pass(SelectableAction);
 	virtual void do_transform_pass(TransformAction);
-	virtual size_t children_count();
+	virtual std::size_t children_count();
 	virtual Vec get_pivot();
 protected:   
     bool constrain_x;

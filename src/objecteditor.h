@@ -6,9 +6,9 @@
 
 class ObjectEditor : public Editor {
 public:
-    std::vector<Shape> *source;
+    std::vector<shape::Shape*> *source;
     
-    ObjectEditor(std::vector<Shape>*);
+    ObjectEditor(std::vector<shape::Shape*>*);
     
     virtual void draw(Graphics);
     virtual void key(KeyEvent,Vec);
