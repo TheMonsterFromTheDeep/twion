@@ -20,12 +20,20 @@ namespace shape {
 		g.end();
 	}
 
-	Point::Point(Vec v) : stored(v), active(v) { }
+	Point::Point(Vec v) : stored(v), active(v), width_stored(1), width_active(1) { }
 
 	Vec Point::position() { return active; }
 
 	bool Point::should_select(Vec pos) {
 		return (pos - stored).lensqr() < 5 * 5;
+	}
+
+	float Point::width() {
+		return width_active;
+	}
+
+	void Point::set_width_multiplier(float m) {
+		width_active = m * width_stored;
 	}
 
 	void Point::on_transform_changed() {
@@ -35,10 +43,12 @@ namespace shape {
 	void Point::on_transform_applied() {
 		stored = get_transform() * stored;
 		active = stored;
+		width_stored = width_active;
 	}
 
 	void Point::on_transform_canceled() {
 		active = stored;
+		width_active = width_stored;
 	}
 
 	Handle::Handle(Vec v) : Point(v) { }
@@ -89,8 +99,8 @@ namespace shape {
 	}
 
 	void Line::draw(Graphics g) {
-		CurvePoint s(start->position(), 1);
-		CurvePoint e(end->position(), 1);
+		CurvePoint s(start->position(), start->width());
+		CurvePoint e(end->position(), end->width());
 		Vec ei = ease_in->position();
 		Vec eo = ease_out->position();
 
@@ -110,7 +120,7 @@ namespace shape {
 		InterpolatedCubic ic(&s, &e, &ei, &eo);
 		ic.calculate();
 		Curve c = ic.generate(0.01f);
-		c.line(g);
+		c.stroke(g);
 	}
 
 	Shape::Shape() : points(), lines() {

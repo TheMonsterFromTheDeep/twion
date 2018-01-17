@@ -16,6 +16,7 @@
 #define ACTION_SCALE  3
 
 #define ACTION_GRAB_CORRECTION 4
+#define ACTION_SCALE_WIDTH 5
 
 #define SELECT_NONE 0
 #define SELECT_ONE  1

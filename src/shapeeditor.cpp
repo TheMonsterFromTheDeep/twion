@@ -147,7 +147,12 @@ namespace shape {
 			}
 		}
 
-		if(e.key == 'A' && !e.control_down) { all_select(); }
+		if(e.key == 'A') {
+			if (e.control_down) {
+				init_action(ACTION_SCALE_WIDTH, mouse);
+			}
+			else all_select();
+		}
 
 		if(action == ACTION_GRAB || action == ACTION_SCALE) {
 			if(e.key == 'X') {
@@ -166,14 +171,22 @@ namespace shape {
 		TransformEditor::mouse_move(position, delta);
 
 		switch (action) {
-		case ACTION_GRAB_CORRECTION:
-			do_grab_update(position);
-			for (Line *l : source->lines) {
-				if (l->start->is_selected() != l->end->is_selected()) {
-					l->straighten();
+			case ACTION_GRAB_CORRECTION:
+				do_grab_update(position);
+				for (Line *l : source->lines) {
+					if (l->start->is_selected() != l->end->is_selected()) {
+						l->straighten();
+					}
 				}
-			}
-			break;
+				break;
+			case ACTION_SCALE_WIDTH: {
+				float m = (position - action_pivot).len() / (action_center - action_pivot).len();
+				for (Point *p : source->points) {
+					if (p->is_selected()) {
+						p->set_width_multiplier(m);
+					}
+				}
+			}	
 		}
 	}
 

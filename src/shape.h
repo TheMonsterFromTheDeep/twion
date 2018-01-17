@@ -65,7 +65,9 @@ namespace shape {
 		Point(Vec);
 
 		virtual bool should_select(Vec);
+		void set_width_multiplier(float);
 		Vec position();
+		float width();
 
 		void draw(Graphics);
 	protected:
@@ -75,6 +77,9 @@ namespace shape {
 	private:
 		Vec stored;
 		Vec active;
+
+		float width_stored;
+		float width_active;
 
 		std::vector<Point*> connections;
 		friend class Shape;
