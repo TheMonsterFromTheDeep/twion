@@ -21,23 +21,23 @@ namespace shape {
 
 	void ShapeEditor::do_transform_pass(TransformAction f) {
 		for (Point *p : source->points) {
-			f(*p);
+			if (f(*p)) break;
 		}
 
 		for (Line *l : source->lines) {
-			f(*l->ease_in);
-			f(*l->ease_out);
+			if (f(*l->ease_in)) break;
+			if (f(*l->ease_out)) break;
 		}
 	}
 
 	void ShapeEditor::do_select_pass(SelectableAction f) {
 		for (Point *p : source->points) {
-			f(*p);
+			if (f(*p)) break;
 		}
 
 		for (Line *l : source->lines) {
-			f(*l->ease_in);
-			f(*l->ease_out);
+			if (f(*l->ease_in)) break;
+			if (f(*l->ease_out)) break;
 		}
 	}
 
