@@ -99,8 +99,8 @@ namespace shape {
 	}
 
 	void Line::draw(Graphics g) {
-		CurvePoint s(start->position(), start->width());
-		CurvePoint e(end->position(), end->width());
+		CurvePoint s(start->position(), start->width(), start->get_color());
+		CurvePoint e(end->position(), end->width(), end->get_color());
 		Vec ei = ease_in->position();
 		Vec eo = ease_out->position();
 
@@ -213,6 +213,14 @@ namespace shape {
 
 		Line *l = new Line(a, b);
 		lines.push_back(l);
+	}
+
+	void Point::set_color(RGB c) {
+		color = c;
+	}
+
+	RGB Point::get_color() {
+		return color;
 	}
 
 	/* TODO: Make this much less inefficient

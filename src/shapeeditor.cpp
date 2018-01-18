@@ -155,6 +155,10 @@ namespace shape {
 			connect();
 		}
 
+		if (e.key == 'C') {
+			color();
+		}
+
 		if(e.key == 'A') {
 			if (e.control_down) {
 				init_action(ACTION_SCALE_WIDTH, mouse);
@@ -210,6 +214,9 @@ namespace shape {
 
 				if (connection_count < 2) {
 					Point *dup = source->add_point(p->position());
+					dup->set_color(p->get_color());
+					dup->set_width_multiplier(p->width());
+					dup->apply();
 
 					std::vector<Point*> to_disconnect;
 
@@ -254,6 +261,14 @@ namespace shape {
 				if (b != nullptr) {
 					source->connect(a, b);
 				}
+			}
+		}
+	}
+
+	void ShapeEditor::color() {
+		for (Point *p : source->points) {
+			if (p->is_selected()) {
+				p->set_color(edit_color);
 			}
 		}
 	}

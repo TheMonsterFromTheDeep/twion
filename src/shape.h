@@ -66,6 +66,8 @@ namespace shape {
 
 		virtual bool should_select(Vec);
 		void set_width_multiplier(float);
+		void set_color(RGB);
+		RGB get_color();
 		Vec position();
 		float width();
 
@@ -84,6 +86,8 @@ namespace shape {
 		std::vector<Point*> connections;
 		friend class Shape;
 		friend class ShapeEditor;
+
+		RGB color;
 
 		Shape* parent;
 	};
@@ -155,6 +159,7 @@ namespace shape {
 		void extrude();
 		void remove();
 		void connect();
+		void color();
 	};
 }
 
