@@ -76,17 +76,19 @@ namespace shape {
 	}
 
 	void ShapeEditor::draw(Graphics g) {
+		source->draw(g);
+
 		RGB select(1.f, 0.8f, 0.1);
 		RGB unselect(0.f, 0.f, 0.f);
 
 		g.rgb(select);
 
 		for (Line *sl : source->lines) {
-			sl->draw(g);
+			sl->draw_edit(g);
 		}
 
 		for (Point *sp : source->points) {
-			sp->draw(g);
+			sp->draw_edit(g);
 		}
 
 		g.rgb(1.f, 0.f, 0.f);

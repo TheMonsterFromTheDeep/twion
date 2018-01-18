@@ -71,7 +71,7 @@ namespace shape {
 		Vec position();
 		float width();
 
-		void draw(Graphics);
+		void draw_edit(Graphics);
 	protected:
 		virtual void on_transform_changed();
 		virtual void on_transform_canceled();
@@ -108,6 +108,7 @@ namespace shape {
 		void straighten();
 
 		void draw(Graphics);
+		void draw_edit(Graphics);
 	protected:
 	private:
 		
@@ -128,6 +129,7 @@ namespace shape {
 		void connect(Point*, Point*);
 		void disconnect(Point*, Point*);
 		void remove_point(Point*);
+		void draw(Graphics);
 	protected:
 	private:
 		std::vector<Point*> points;

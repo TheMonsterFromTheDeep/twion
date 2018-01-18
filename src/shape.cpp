@@ -86,7 +86,7 @@ namespace shape {
 		ease_out->set_transform(Transform::project(eo));
 	}
 
-	void Point::draw(Graphics g) {
+	void Point::draw_edit(Graphics g) {
 		float width_0 = g.normalize(6);
 		float width_1 = g.normalize(3);
 
@@ -104,6 +104,18 @@ namespace shape {
 		Vec ei = ease_in->position();
 		Vec eo = ease_out->position();
 
+		InterpolatedCubic ic(&s, &e, &ei, &eo);
+		ic.calculate();
+		Curve c = ic.generate(0.01f);
+		c.stroke(g);
+	}
+
+	void Line::draw_edit(Graphics g) {
+		CurvePoint s(start->position(), 1);
+		CurvePoint e(end->position(), 1);
+		Vec ei = ease_in->position();
+		Vec eo = ease_out->position();
+
 		if (ease_in->is_selected()) g.rgb(1.f, 0.8f, 0.1f);
 		else              g.rgb(0.0f, 0.0f, 0.0f);
 		g.line(start->position(), ease_in->position());
@@ -115,12 +127,12 @@ namespace shape {
 		g.draw_circle(ease_out->position(), g.normalize(5));
 
 		if (start->is_selected() && end->is_selected()) g.rgb(1.f, 0.8f, 0.1f);
-		else              g.rgb(0.0f, 0.0f, 0.0f);
+		else              g.rgb(1.0f, 0.0f, 0.0f);
 
 		InterpolatedCubic ic(&s, &e, &ei, &eo);
 		ic.calculate();
 		Curve c = ic.generate(0.01f);
-		c.stroke(g);
+		c.line(g);
 	}
 
 	Shape::Shape() : points(), lines() {
@@ -141,6 +153,12 @@ namespace shape {
 		sqr->connect(3, 0);
 
 		return sqr;
+	}
+
+	void Shape::draw(Graphics g) {
+		for (Line *l : lines) {
+			l->draw(g);
+		}
 	}
 
 	Point* Shape::add_point(Vec v) {
