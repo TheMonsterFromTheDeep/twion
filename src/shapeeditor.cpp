@@ -151,6 +151,10 @@ namespace shape {
 			remove();
 		}
 
+		if (e.key == 'F') {
+			connect();
+		}
+
 		if(e.key == 'A') {
 			if (e.control_down) {
 				init_action(ACTION_SCALE_WIDTH, mouse);
@@ -235,6 +239,21 @@ namespace shape {
 		for (Point *p : source->points) {
 			if (p->is_selected()) {
 				source->remove_point(p);
+			}
+		}
+	}
+
+	void ShapeEditor::connect() {
+		Point *a = nullptr;
+		Point *b = nullptr;
+
+		for (Point *p : source->points) {
+			if (p->is_selected()) {
+				b = a;
+				a = p;
+				if (b != nullptr) {
+					source->connect(a, b);
+				}
 			}
 		}
 	}

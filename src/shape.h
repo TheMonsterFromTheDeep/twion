@@ -154,6 +154,7 @@ namespace shape {
 	private:
 		void extrude();
 		void remove();
+		void connect();
 	};
 }
 
