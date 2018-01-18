@@ -167,6 +167,16 @@ namespace shape {
 			else ++i;
 		}
 
+		/* TODO: Use a better node structure (as well as smart pointers, although
+		 * that would actually just hide the problem in this case)
+		 */
+		for (Point *c : p->connections) {
+			auto place = std::find(c->connections.begin(), c->connections.end(), p);
+			if (place != c->connections.end()) {
+				c->connections.erase(place);
+			}
+		}
+
 		delete p;
 	}
 
