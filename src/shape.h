@@ -123,6 +123,7 @@ namespace shape {
 		void connect(std::size_t, std::size_t);
 		void connect(Point*, Point*);
 		void disconnect(Point*, Point*);
+		void remove_point(Point*);
 	protected:
 	private:
 		std::vector<Point*> points;
@@ -152,6 +153,7 @@ namespace shape {
 		virtual Vec get_pivot();
 	private:
 		void extrude();
+		void remove();
 	};
 }
 

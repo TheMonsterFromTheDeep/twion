@@ -151,6 +151,25 @@ namespace shape {
 		return p;
 	}
 
+	void Shape::remove_point(Point *p) {
+		auto it = std::find(points.begin(), points.end(), p);
+		if (it == points.end()) {
+			/* Point not found */
+			return;
+		}
+
+		points.erase(it);
+		for (auto i = lines.begin(); i != lines.end();) {
+			Line *l = *i;
+			if (l->start == p || l->end == p) {
+				lines.erase(i);
+			}
+			else ++i;
+		}
+
+		delete p;
+	}
+
 	void Shape::connect(std::size_t a_index, std::size_t b_index) {
 		Point *a = points[a_index];
 		Point *b = points[b_index];

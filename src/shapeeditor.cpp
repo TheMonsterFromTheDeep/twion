@@ -147,6 +147,10 @@ namespace shape {
 			}
 		}
 
+		if (e.key == 261) {
+			remove();
+		}
+
 		if(e.key == 'A') {
 			if (e.control_down) {
 				init_action(ACTION_SCALE_WIDTH, mouse);
@@ -225,6 +229,14 @@ namespace shape {
 		}
 
 		init_action(ACTION_GRAB_CORRECTION, mouse_last);
+	}
+
+	void ShapeEditor::remove() {
+		for (Point *p : source->points) {
+			if (p->is_selected()) {
+				source->remove_point(p);
+			}
+		}
 	}
 
 	void ShapeEditor::mouse(MouseEvent m, Vec pos) {
