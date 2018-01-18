@@ -3,8 +3,9 @@
 
 #include <vector>
 #include "shape.h"
+#include "transformedit.h"
 
-class ObjectEditor : public Editor {
+class ObjectEditor : public TransformEditor {
 public:
     std::vector<shape::Shape*> *source;
     
@@ -12,26 +13,12 @@ public:
     
     virtual void draw(Graphics);
     virtual void key(KeyEvent,Vec);
-    virtual void mouse_move(Vec,Vec);
     virtual void mouse(MouseEvent,Vec);
 private:
-    enum EditState {
-        NONE,
-        GRAB,
-        ROTATE,
-        SCALE
-    };
-    
-    void confirm();
-    void cancel();
-    
-    EditState state;
-
-    void add_circle();
-    
-    Vec action_center;
-    
-    Vec original_pos;
+	virtual void do_transform_pass(TransformAction);
+	virtual void do_select_pass(SelectableAction);
+	virtual std::size_t children_count();
+	virtual Vec get_pivot();
 };
 
 #endif

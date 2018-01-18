@@ -116,7 +116,7 @@ namespace shape {
 
 	class ShapeEditor;
 
-	class Shape {
+	class Shape : public Transformable {
 	public:
 		Shape();
 
@@ -130,6 +130,8 @@ namespace shape {
 		void disconnect(Point*, Point*);
 		void remove_point(Point*);
 		void draw(Graphics);
+
+		virtual bool should_select(Vec);
 	protected:
 	private:
 		std::vector<Point*> points;

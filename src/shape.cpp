@@ -155,6 +155,11 @@ namespace shape {
 		return sqr;
 	}
 
+	bool Shape::should_select(Vec v) {
+		/* TODO: Implement polygon checking thing */
+		return true;
+	}
+
 	void Shape::draw(Graphics g) {
 		for (Line *l : lines) {
 			l->draw(g);
