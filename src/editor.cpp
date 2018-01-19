@@ -8,7 +8,7 @@
 #include <cmath>
 
 EditorWindow::EditorWindow() : Control(0,0,100,100,RGB(0.45, 0.45, 0.45)),
-    left(), right(), container(0, 0, 100, 100), left_view(0, 0, 1, 1, RGB(), 0.3f), right_view(0, 0, 1, 1, RGB(), 0.3f) {
+    left(), right(), container(0, 0, 100, 100), left_view(0, 0, 1, 1, RGB(), 0.3f), right_view(0, 0, 1, 1, RGB(), 0.7f) {
         left_view.attach(&left);
         left_view.attach(&container);
         left.sizer = &left_view;
@@ -19,8 +19,9 @@ EditorWindow::EditorWindow() : Control(0,0,100,100,RGB(0.45, 0.45, 0.45)),
         right.sizer = &right_view;
         attach(&right_view);
         right_view.sizer = new ScaleSizer(1.f, 1.f);
-        
+		
         container.window = this;
+		container.init_editor();
 }
 
 EditorMenu::EditorMenu() : Control(0, 0, 100, 100, RGB(0.6, 0.6, 0.6)) { }
@@ -45,16 +46,19 @@ void Editor::change_editor(Editor *e) {
 
 EditorContainer::EditorContainer(int x, int y, int w, int h) :
 	Control(x, y, w, h, RGB(0.45f, 0.45f, 0.45f)),
-    zoom_exp(0), zoom_amount(1), panning(false), editor(NULL) {
+    zoom_exp(0), zoom_amount(1), editor(NULL), panning(false) {
        // test.add(CurvePoint(100, 100, 1, RGB(0, 1, 0)), Vec(0 - 10, 0 - 10), Vec(0 + 10, 0 + 10));
        // test.add(CurvePoint(200, 100, 5, RGB(0, 0, 1)), Vec(100 - 10, 0 + 10), Vec(100 + 10, 0 - 10));
         
       //  editor = test.get_editor();
-        set_editor(get_object_editor());
     }
+	
+void EditorContainer::init_editor() {
+	set_editor(get_object_editor());
+}
     
 ObjectEditor *EditorContainer::get_object_editor() {
-    return new ObjectEditor(&shapes);
+    return new ObjectEditor(&global_shapes);
 }
     
 void EditorContainer::set_editor(Editor *e) {

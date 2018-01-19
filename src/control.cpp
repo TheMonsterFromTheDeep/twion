@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-void Sizer::size(Control* c, int winWidth, int winHeight) { std::cout << "an unassigned sizer is being used." << std::endl; }
+void Sizer::size(Control* c, int winWidth, int winHeight) { }
 
 ScaleSizer::ScaleSizer() : x(1), y(1) { }
 ScaleSizer::ScaleSizer(float x_, float y_, float ox_, float oy_) : x(x_), y(y_), ox(ox_), oy(oy_) { }
