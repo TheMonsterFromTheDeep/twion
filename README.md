@@ -1,3 +1,7 @@
+## NOTE
+
+Twion has been superseded by [Sunset Studio](https://notabug.org/TheMonsterFromTheDeep/sunset) due to several architectural flaws that were easier to clear out through complete restart of the project.
+
 # twion
 Twion is intended to be a 2D animation software based heavily on Blender.
 
@@ -38,7 +42,7 @@ Pressing Shift-G instead of just G enters "corrective translation," which will c
 ### new points
 (Currently unimplemented) Pressing Control-R creates new points between selected points, and immediately enters into sliding transformation mode. Right-clicking to exit sliding transformation will cause the new points to be at the center of the old points, as that is where they are created.
 
-Pressing E creates new points as an "extrusion," and then immediately enters into corrective translation mode. Right clicking will not delete the points; rather they will simply lie on the same point as their sources.
+Pressing E creates new points as an "extrusion," and then immediately enters into corrective translation mode. Right clicking will not delete the points; rather they will simply lie on the same point as their sources. 
 
 ### deleting points
 Pressing Delete deletes selected points.
